@@ -68,7 +68,7 @@ html {
   background: var(--color-ebony);
   border: none;
   border-radius: 0;
-  padding: 0.5rem 1.2rem;
+  padding-right: 10px;
   box-sizing: border-box;
   margin: 0;
   display: flex;
@@ -668,7 +668,10 @@ html {
   outline: none;
 }
 .breadcrumb-link:focus {
-  text-decoration: underline;
+  text-decoration: none;
+}
+.breadcrumb-link:hover {
+  color: #888;
 }
 .breadcrumb-separator {
   margin: 0 0.7em;
@@ -690,4 +693,22 @@ html {
     margin: 0.7rem 0 0.5rem 0;
     padding: 0 0.7rem;
   }
+}
+
+.navbar-logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  height: 40px;
+}
+.navbar-logo {
+  height: 150px;
+  width: auto;
+  display: block;
+}
+.admin-header .navbar-logo-link {
+  height: 40px;
+}
+.admin-header .navbar-logo {
+  height: 32px;
 }

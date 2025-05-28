@@ -118,7 +118,9 @@ const Navbar: React.FC = () => {
   const { logged } = useContext(AuthContext);
   return (
     <nav className="navbar" aria-label="Barra de navegación principal">
-      <Link to="/" className="navbar-title" tabIndex={0} aria-label="Ir a inicio">delaika</Link>
+      <Link to="/" className="navbar-logo-link" tabIndex={0} aria-label="Ir a inicio">
+        <img src="/logo.png" alt="delaika logo" className="navbar-logo" height={32} />
+      </Link>
       <span className="navbar-spacer" />
       {logged && <AdminIcon />}
       {logged ? <LogoutIcon /> : <LoginIcon />}
@@ -172,7 +174,9 @@ const AdminSidebar: React.FC = () => (
 const AdminLayout: React.FC = () => (
   <div className="admin-layout">
     <header className="admin-header">
-      <Link to="/" className="navbar-title" tabIndex={0} aria-label="Ir a inicio">delaika</Link>
+      <Link to="/" className="navbar-logo-link" tabIndex={0} aria-label="Ir a inicio">
+        <img src="/logo.png" alt="delaika logo" className="navbar-logo" height={32} />
+      </Link>
     </header>
     <div className="admin-content">
       <AdminSidebar />
