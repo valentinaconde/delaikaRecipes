@@ -438,3 +438,70 @@ html {
   background: var(--color-dun);
   min-height: 100vh;
 }
+
+.admin-recetas {
+  margin-top: 1.5rem;
+}
+.abml-recetas-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-bottom: 2rem;
+  background: var(--color-sage);
+  padding: 1.2rem;
+  border-radius: 10px;
+}
+.abml-recetas-form input,
+.abml-recetas-form select,
+.abml-recetas-form textarea {
+  font-size: 1rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 6px;
+  border: 1.5px solid var(--color-dun);
+  background: var(--color-bone);
+  color: #222;
+}
+.abml-recetas-form button {
+  background: var(--color-ebony);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.2rem;
+  transition: background 0.15s;
+}
+.abml-recetas-form button:hover {
+  background: var(--color-reseda);
+}
+.abml-recetas-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.abml-recetas-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.7rem;
+  background: var(--color-dun);
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+}
+.abml-recetas-item button {
+  background: var(--color-ebony);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.98rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-left: 0.3rem;
+  transition: background 0.15s;
+}
+.abml-recetas-item button:hover {
+  background: var(--color-reseda);
+}

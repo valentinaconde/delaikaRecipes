@@ -5,6 +5,7 @@ import CategoriasSidebar from './CategoriasSidebar'
 import RecetasGrid from './RecetasGrid'
 import RecetaDetalle from './RecetaDetalle'
 import AdminCategorias, { CategoriasContext } from './AdminCategorias'
+import AdminRecetas from './AdminRecetas'
 
 export const RecetasContext = createContext<{
   recetas: any[];
@@ -181,8 +182,6 @@ const AdminLayout: React.FC = () => (
     </div>
   </div>
 );
-
-const AdminRecetas: React.FC = () => <div />;
 
 const GlobalLoading: React.FC = () => {
   const { loading } = useContext(LoadingContext);
