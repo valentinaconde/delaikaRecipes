@@ -138,6 +138,11 @@ html {
 .category-item:hover {
   background: var(--color-dun);
 }
+.category-item.selected {
+  background: var(--color-dun);
+  font-weight: 600;
+  color: #222;
+}
 
 .main-content {
   flex: 1;
