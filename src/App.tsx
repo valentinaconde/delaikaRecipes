@@ -379,6 +379,7 @@ const RecetaDetalleWrapper = ({ categorias }: { categorias: string[] }) => {
             className="breadcrumb-link"
             tabIndex={0}
             aria-label="Ir a recetas"
+            style={{ textTransform: 'uppercase' }}
             onClick={e => { e.preventDefault(); window.location.href = '/'; }}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { window.location.href = '/'; } }}
           >
@@ -387,7 +388,24 @@ const RecetaDetalleWrapper = ({ categorias }: { categorias: string[] }) => {
           {receta.categoria && (
             <>
               <span className="breadcrumb-separator" aria-hidden="true">/</span>
-              <span className="breadcrumb-current">{receta.categoria}</span>
+              <a
+                href={`/?categoria=${encodeURIComponent(receta.categoria)}`}
+                className="breadcrumb-link"
+                tabIndex={0}
+                aria-label={`Ver recetas de ${receta.categoria}`}
+                style={{ textTransform: 'uppercase' }}
+                onClick={e => {
+                  e.preventDefault();
+                  window.location.href = `/?categoria=${encodeURIComponent(receta.categoria)}`;
+                }}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    window.location.href = `/?categoria=${encodeURIComponent(receta.categoria)}`;
+                  }
+                }}
+              >
+                {receta.categoria}
+              </a>
             </>
           )}
         </nav>

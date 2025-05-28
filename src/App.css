@@ -672,6 +672,9 @@ html {
   font-weight: 500;
   letter-spacing: 0.08em;
 }
+.breadcrumb, .breadcrumb-link, .breadcrumb-current {
+  text-transform: uppercase;
+}
 
 @media (max-width: 768px) {
   .breadcrumb {
