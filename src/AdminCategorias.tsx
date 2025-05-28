@@ -48,11 +48,12 @@ const AdminCategorias: React.FC = () => {
       <div className="abml-categorias-form">
         <input
           type="text"
+          className='agregar-categoria-input'
           placeholder="Nueva categoría"
           value={nuevaCategoria}
           onChange={e => setNuevaCategoria(e.target.value)}
         />
-        <button onClick={handleAdd}>Agregar</button>
+        <button onClick={handleAdd} className="agregar-categoria-btn">Agregar</button>
       </div>
       <ul className="abml-categorias-list">
         {categorias.map((cat, idx) => (
@@ -66,7 +67,7 @@ const AdminCategorias: React.FC = () => {
                   onKeyDown={e => { if (e.key === 'Enter') handleEditSave(); }}
                   autoFocus
                 />
-                <button onClick={handleEditSave}>Guardar</button>
+                <button onClick={handleEditSave} >Guardar</button>
                 <button onClick={() => { setEditIndex(null); setEditValue(''); }}>Cancelar</button>
               </>
             ) : (

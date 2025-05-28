@@ -588,6 +588,28 @@ html {
 .abml-categorias-item button + button {
   margin-left: 8px;
 }
+.agregar-categoria-btn{
+    background: var(--color-ebony);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.98rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 8px;
+    height: 40px;
+    
+
+}
+.agregar-categoria-input{
+  height: 25px;
+      font-size: 1rem;
+    padding: 0.5rem 0.7rem;
+    border-radius: 6px;
+    border: 1.5px solid var(--color-dun);
+    background: var(--color-bone);
+    color: #222;
+}
 
 /* --- MOBILE CATEGORIAS TOGGLE --- */
 
