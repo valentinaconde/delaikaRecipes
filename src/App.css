@@ -40,3 +40,38 @@
 .read-the-docs {
   color: #888;
 }
+
+.navbar {
+  width: 100%;
+  background: #fff;
+  border: 2px solid #222;
+  border-radius: 16px 16px 8px 8px;
+  padding: 0.5rem 1.2rem;
+  box-sizing: border-box;
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-title {
+  font-size: 1.2rem;
+  font-family: inherit;
+  color: #222;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+.main-content {
+  min-height: 60vh;
+  padding-left: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  color: #222;
+  font-family: inherit;
+  margin-top: 0.5rem;
+}
