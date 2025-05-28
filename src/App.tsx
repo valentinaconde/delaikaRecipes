@@ -250,8 +250,23 @@ const MainView = ({ categorias }: { categorias: string[] }) => {
           tabIndex={0}
           onClick={handleToggleCategorias}
           onKeyDown={handleToggleKeyDown}
+          style={{ justifyContent: 'space-between' }}
         >
-          Categorías
+          <span>Categorías</span>
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            focusable="false"
+            style={{ marginLeft: 'auto' }}
+          >
+            <rect x="4" y="7" width="16" height="2" rx="1" fill="#414833" />
+            <rect x="4" y="11" width="16" height="2" rx="1" fill="#414833" />
+            <rect x="4" y="15" width="16" height="2" rx="1" fill="#414833" />
+          </svg>
         </button>
       )}
       <CategoriasSidebar
@@ -313,8 +328,23 @@ const RecetaDetalleWrapper = ({ categorias }: { categorias: string[] }) => {
           tabIndex={0}
           onClick={handleToggleCategorias}
           onKeyDown={handleToggleKeyDown}
+          style={{ justifyContent: 'space-between' }}
         >
-          Categorías
+          <span>Categorías</span>
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            focusable="false"
+            style={{ marginLeft: 'auto' }}
+          >
+            <rect x="4" y="7" width="16" height="2" rx="1" fill="#414833" />
+            <rect x="4" y="11" width="16" height="2" rx="1" fill="#414833" />
+            <rect x="4" y="15" width="16" height="2" rx="1" fill="#414833" />
+          </svg>
         </button>
       )}
       <CategoriasSidebar
