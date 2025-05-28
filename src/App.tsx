@@ -6,6 +6,14 @@ import RecetasGrid from './RecetasGrid'
 import RecetaDetalle from './RecetaDetalle'
 import AdminCategorias, { CategoriasContext } from './AdminCategorias'
 
+export const RecetasContext = createContext<{
+  recetas: any[];
+  setRecetas: React.Dispatch<React.SetStateAction<any[]>>;
+}>({
+  recetas: [],
+  setRecetas: () => {},
+});
+
 const categories = [
   'Postres',
   'Ensaladas',
@@ -15,7 +23,7 @@ const categories = [
   'Pastas'
 ];
 
-const recetas = [
+const recetasIniciales = [
   {
     id: 1,
     titulo: 'Ñoquis de calabaza',
@@ -202,6 +210,7 @@ const MainView = ({ categorias }: { categorias: string[] }) => {
     setLoading(false);
   }, [categoriaParam, setLoading]);
 
+  const { recetas } = useContext(RecetasContext);
   const recetasFiltradas = categoriaSeleccionada
     ? recetas.filter(r => r.categoria === categoriaSeleccionada)
     : recetas;
@@ -227,6 +236,7 @@ const MainView = ({ categorias }: { categorias: string[] }) => {
 
 const RecetaDetalleWrapper = ({ categorias }: { categorias: string[] }) => {
   const { id } = useParams();
+  const { recetas } = useContext(RecetasContext);
   const receta = recetas.find(r => r.id === Number(id));
   if (!receta) return <Navigate to="/" replace />;
   return (
@@ -247,25 +257,28 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [logged, setLogged] = useState(false);
   const [categorias, setCategorias] = useState(categories);
+  const [recetas, setRecetas] = useState(recetasIniciales);
   return (
     <AuthContext.Provider value={{ logged, setLogged }}>
       <LoadingContext.Provider value={{ loading, setLoading }}>
         <CategoriasContext.Provider value={{ categorias, setCategorias }}>
-          <Router>
-            <GlobalLoading />
-            <Navbar />
-            <Routes>
-              <Route path="/" element={<MainView categorias={categorias} />} />
-              <Route path="/receta/:id" element={<RecetaDetalleWrapper categorias={categorias} />} />
-              <Route path="/login" element={<LoginView />} />
-              <Route path="/admin" element={logged ? <AdminLayout /> : <Navigate to="/login" replace />}>
-                <Route path="categorias" element={<AdminCategorias />} />
-                <Route path="recetas" element={<AdminRecetas />} />
-                <Route index element={<div />} />
-              </Route>
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Router>
+          <RecetasContext.Provider value={{ recetas, setRecetas }}>
+            <Router>
+              <GlobalLoading />
+              <Navbar />
+              <Routes>
+                <Route path="/" element={<MainView categorias={categorias} />} />
+                <Route path="/receta/:id" element={<RecetaDetalleWrapper categorias={categorias} />} />
+                <Route path="/login" element={<LoginView />} />
+                <Route path="/admin" element={logged ? <AdminLayout /> : <Navigate to="/login" replace />}>
+                  <Route path="categorias" element={<AdminCategorias />} />
+                  <Route path="recetas" element={<AdminRecetas />} />
+                  <Route index element={<div />} />
+                </Route>
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Router>
+          </RecetasContext.Provider>
         </CategoriasContext.Provider>
       </LoadingContext.Provider>
     </AuthContext.Provider>
