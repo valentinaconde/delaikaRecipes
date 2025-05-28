@@ -255,6 +255,7 @@ html {
   align-items: start;
 }
 .detalle-titulo {
+  text-transform: uppercase;
   font-size: 2rem;
   font-weight: 600;
   margin-bottom: 1.2rem;
