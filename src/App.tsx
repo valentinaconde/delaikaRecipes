@@ -1,6 +1,6 @@
 import './App.css'
 import { useState, useEffect, createContext, useContext } from 'react'
-import { BrowserRouter as Router, Routes, Route, useParams, Navigate, useSearchParams } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useParams, Navigate, useSearchParams, useNavigate } from 'react-router-dom'
 import CategoriasSidebar from './CategoriasSidebar'
 import RecetasGrid from './RecetasGrid'
 import RecetaDetalle from './RecetaDetalle'
@@ -67,6 +67,68 @@ const recetas = [
 
 // Contexto global para loading
 const LoadingContext = createContext<{loading: boolean, setLoading: (v: boolean) => void}>({loading: false, setLoading: () => {}});
+// Contexto global para auth
+const AuthContext = createContext<{logged: boolean, setLogged: (v: boolean) => void}>({logged: false, setLogged: () => {}});
+
+const LoginIcon: React.FC = () => {
+  const { logged } = useContext(AuthContext);
+  const navigate = useNavigate();
+  if (logged) return null;
+  return (
+    <button className="login-icon-btn" aria-label="Iniciar sesión" onClick={() => navigate('/login')}>
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"/><path d="M21 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/></svg>
+    </button>
+  );
+};
+
+const Navbar: React.FC = () => (
+  <nav className="navbar" aria-label="Barra de navegación principal">
+    <span className="navbar-title">delaika</span>
+    <span className="navbar-spacer" />
+    <LoginIcon />
+  </nav>
+);
+
+const LoginView: React.FC = () => {
+  const { setLogged } = useContext(AuthContext);
+  const { setLoading } = useContext(LoadingContext);
+  const navigate = useNavigate();
+  const [user, setUser] = useState('');
+  const [pass, setPass] = useState('');
+  const [error, setError] = useState('');
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      if (user === 'admin' && pass === 'admin') {
+        setLogged(true);
+        navigate('/admin', { replace: true });
+      } else {
+        setError('Usuario o contraseña incorrectos');
+      }
+    }, 700);
+  };
+  return (
+    <div className="login-container">
+      <form className="login-form" onSubmit={handleSubmit}>
+        <h2>Iniciar sesión</h2>
+        <input type="text" placeholder="Usuario" value={user} onChange={e => setUser(e.target.value)} />
+        <input type="password" placeholder="Contraseña" value={pass} onChange={e => setPass(e.target.value)} />
+        <button type="submit">Entrar</button>
+        {error && <div className="login-error">{error}</div>}
+      </form>
+    </div>
+  );
+};
+
+const AdminLayout: React.FC = () => (
+  <div className="admin-layout">
+    <header className="admin-header">Panel de administración</header>
+    <main className="admin-main">Bienvenido, admin.</main>
+  </div>
+);
 
 const GlobalLoading: React.FC = () => {
   const { loading } = useContext(LoadingContext);
@@ -137,20 +199,23 @@ const RecetaDetalleWrapper = () => {
 
 const App = () => {
   const [loading, setLoading] = useState(false);
+  const [logged, setLogged] = useState(false);
   return (
-    <LoadingContext.Provider value={{ loading, setLoading }}>
-      <Router>
-        <GlobalLoading />
-        <nav className="navbar" aria-label="Barra de navegación principal">
-          <span className="navbar-title">delaika</span>
-        </nav>
-        <Routes>
-          <Route path="/" element={<MainView />} />
-          <Route path="/receta/:id" element={<RecetaDetalleWrapper />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Router>
-    </LoadingContext.Provider>
+    <AuthContext.Provider value={{ logged, setLogged }}>
+      <LoadingContext.Provider value={{ loading, setLoading }}>
+        <Router>
+          <GlobalLoading />
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<MainView />} />
+            <Route path="/receta/:id" element={<RecetaDetalleWrapper />} />
+            <Route path="/login" element={<LoginView />} />
+            <Route path="/admin" element={logged ? <AdminLayout /> : <Navigate to="/login" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Router>
+      </LoadingContext.Provider>
+    </AuthContext.Provider>
   )
 }
 

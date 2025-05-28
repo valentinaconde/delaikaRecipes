@@ -64,7 +64,7 @@ html {
 }
 
 .navbar {
-  width: 100%;
+  width: 100vw;
   background: var(--color-ebony);
   border: none;
   border-radius: 0;
@@ -75,13 +75,29 @@ html {
   align-items: center;
   min-height: 56px;
 }
-
 .navbar-title {
   font-size: 1.2rem;
   font-family: inherit;
   color: #fff;
   font-weight: 400;
   letter-spacing: 0.5px;
+}
+.navbar-spacer {
+  flex: 1;
+}
+.login-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 1.2rem;
+  display: flex;
+  align-items: center;
+  padding: 0.2rem;
+  border-radius: 50%;
+  transition: background 0.15s;
+}
+.login-icon-btn:hover {
+  background: var(--color-reseda);
 }
 
 .layout {
@@ -301,4 +317,76 @@ html {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.login-container {
+  min-height: calc(100vh - 56px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bone);
+}
+.login-form {
+  background: var(--color-sage);
+  border-radius: 12px;
+  padding: 2.5rem 2rem 2rem 2rem;
+  box-shadow: 0 2px 12px rgba(65, 72, 51, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  min-width: 270px;
+}
+.login-form h2 {
+  color: #222;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.login-form input {
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  border: 1.5px solid var(--color-dun);
+  font-size: 1rem;
+  background: var(--color-bone);
+  color: #222;
+}
+.login-form button {
+  background: var(--color-ebony);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.15s;
+}
+.login-form button:hover {
+  background: var(--color-reseda);
+}
+.login-error {
+  color: #b00;
+  font-size: 0.98rem;
+  margin-top: 0.2rem;
+}
+
+.admin-layout {
+  min-height: calc(100vh - 56px);
+  background: var(--color-dun);
+  display: flex;
+  flex-direction: column;
+}
+.admin-header {
+  background: var(--color-ebony);
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 600;
+  padding: 1.2rem 2rem;
+}
+.admin-main {
+  flex: 1;
+  padding: 2.5rem 2rem;
+  color: #222;
+  font-size: 1.1rem;
 }
