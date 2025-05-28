@@ -527,6 +527,67 @@ html {
   background: var(--color-reseda);
 }
 
+.abml-categorias-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.abml-categorias-item {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 0.7rem;
+  background: var(--color-dun);
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  color: #222;
+  font-size: 1.05rem;
+  font-family: inherit;
+  font-weight: 500;
+  box-shadow: none;
+}
+.abml-categorias-item > span {
+  width: 200px;
+  flex: 0.1 1 auto;
+  min-width: 0;
+  text-align: left;
+  justify-content: flex-start;
+  display: flex;
+  align-items: center;
+  
+}
+.abml-categorias-item input[type="text"] {
+  font-size: 1rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  border: 1.5px solid var(--color-sage);
+  background: var(--color-bone);
+  color: #222;
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+}
+.abml-categorias-item button {
+  background: var(--color-ebony);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.98rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: background 0.15s;
+  flex: 0 0 auto;
+  align-self: flex-start;
+}
+.abml-categorias-item button:first-of-type {
+  margin-left: 12px;
+}
+.abml-categorias-item button + button {
+  margin-left: 8px;
+}
+
 /* --- MOBILE CATEGORIAS TOGGLE --- */
 
 @media (max-width: 768px) {
