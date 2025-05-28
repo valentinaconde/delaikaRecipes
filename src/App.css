@@ -510,6 +510,9 @@ html {
 /* --- MOBILE CATEGORIAS TOGGLE --- */
 
 @media (max-width: 768px) {
+  .sidebar-title {
+    display: none;
+}
   .layout {
     flex-direction: column;
     height: auto;
