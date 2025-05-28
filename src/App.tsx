@@ -36,7 +36,7 @@ const recetasIniciales = [
   {
     id: 2,
     titulo: 'Panna cotta',
-    imagen: 'https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=400&q=80',
+    imagen: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80',
     categoria: 'Postres',
     ingredientes: ['Crema', 'Azúcar', 'Gelatina', 'Vainilla'],
     pasos: ['Calentar la crema.', 'Agregar azúcar y vainilla.', 'Disolver la gelatina.', 'Refrigerar.'],
@@ -52,7 +52,7 @@ const recetasIniciales = [
   {
     id: 4,
     titulo: 'Burrata con nueces',
-    imagen: 'https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=400&q=80',
+    imagen: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80',
     categoria: 'Ensaladas',
     ingredientes: ['Burrata', 'Nueces', 'Aceite de oliva'],
     pasos: ['Colocar la burrata.', 'Agregar nueces.', 'Rociar con aceite.'],
@@ -68,7 +68,7 @@ const recetasIniciales = [
   {
     id: 6,
     titulo: 'Omelette',
-    imagen: 'https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=400&q=80',
+    imagen: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80',
     categoria: 'Carnes',
     ingredientes: ['Huevos', 'Sal', 'Pimienta', 'Queso'],
     pasos: ['Batir los huevos.', 'Cocinar en sartén.', 'Agregar queso.', 'Doblar y servir.'],

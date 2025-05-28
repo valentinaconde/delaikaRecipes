@@ -513,6 +513,18 @@ html {
   .sidebar-title {
     display: none;
 }
+
+
+.receta-card{
+  width: auto;
+  min-width: auto;
+  max-width: none;
+}
+
+.receta-img{
+  width: 100%;
+  height: 100%;
+}
   .layout {
     flex-direction: column;
     height: auto;
