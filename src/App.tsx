@@ -1,6 +1,6 @@
 import './App.css'
 import { useState, useEffect, createContext, useContext } from 'react'
-import { BrowserRouter as Router, Routes, Route, useParams, Navigate, useSearchParams, useNavigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useParams, Navigate, useSearchParams, useNavigate, Link } from 'react-router-dom'
 import CategoriasSidebar from './CategoriasSidebar'
 import RecetasGrid from './RecetasGrid'
 import RecetaDetalle from './RecetaDetalle'
@@ -81,13 +81,30 @@ const LoginIcon: React.FC = () => {
   );
 };
 
-const Navbar: React.FC = () => (
-  <nav className="navbar" aria-label="Barra de navegación principal">
-    <span className="navbar-title">delaika</span>
-    <span className="navbar-spacer" />
-    <LoginIcon />
-  </nav>
-);
+const LogoutIcon: React.FC = () => {
+  const { setLogged } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    setLogged(false);
+    navigate('/', { replace: true });
+  };
+  return (
+    <button className="logout-icon-btn" aria-label="Cerrar sesión" onClick={handleLogout}>
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </button>
+  );
+};
+
+const Navbar: React.FC = () => {
+  const { logged } = useContext(AuthContext);
+  return (
+    <nav className="navbar" aria-label="Barra de navegación principal">
+      <Link to="/" className="navbar-title" tabIndex={0} aria-label="Ir a inicio">delaika</Link>
+      <span className="navbar-spacer" />
+      {logged ? <LogoutIcon /> : <LoginIcon />}
+    </nav>
+  );
+};
 
 const LoginView: React.FC = () => {
   const { setLogged } = useContext(AuthContext);
@@ -125,7 +142,9 @@ const LoginView: React.FC = () => {
 
 const AdminLayout: React.FC = () => (
   <div className="admin-layout">
-    <header className="admin-header">Panel de administración</header>
+    <header className="admin-header">
+      <Link to="/" className="navbar-title" tabIndex={0} aria-label="Ir a inicio">delaika</Link>
+    </header>
     <main className="admin-main">Bienvenido, admin.</main>
   </div>
 );
