@@ -25,7 +25,7 @@ const CategoriasSidebar: React.FC<CategoriasSidebarProps> = ({ categorias, categ
       aria-label="Categorías"
       aria-hidden={isMobile && !visible}
     >
-      <div className="sidebar-title">categorias</div>
+      <div className="sidebar-title">CATEGORIAS</div>
       <ul className="category-list">
         <li
           className={`category-item${!categoriaSeleccionada ? ' selected' : ''}`}

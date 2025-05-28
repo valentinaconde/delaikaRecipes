@@ -125,6 +125,7 @@ html {
 }
 
 .sidebar {
+  text-align: left;
   width: 180px;
   background: var(--color-sage);
   border: none;
@@ -188,6 +189,8 @@ html {
 }
 
 .section-title {
+  text-align: left;
+  padding-left: 20px;
   font-size: 1.1rem;
   color: #222;
   font-family: inherit;

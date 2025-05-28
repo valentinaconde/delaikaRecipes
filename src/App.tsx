@@ -266,7 +266,9 @@ const MainView = ({ categorias }: { categorias: string[] }) => {
       <main
         className={`main-content${isMobile ? (showCategorias ? ' main-content--with-categorias' : ' main-content--without-categorias') : ''}`}
       >
-        <span className="section-title">recetas</span>
+        <span className="section-title">
+          {categoriaSeleccionada ? categoriaSeleccionada : 'todas las recetas'}
+        </span>
         <RecetasGrid recetas={recetasFiltradas} />
       </main>
     </div>
