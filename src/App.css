@@ -9,12 +9,21 @@
 body, #root {
   background: var(--color-bone);
   min-height: 100vh;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 #root {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
@@ -58,12 +67,13 @@ body, #root {
   width: 100%;
   background: var(--color-ebony);
   border: none;
-  border-radius: 16px 16px 8px 8px;
+  border-radius: 0;
   padding: 0.5rem 1.2rem;
   box-sizing: border-box;
-  margin-bottom: 2.5rem;
+  margin: 0;
   display: flex;
   align-items: center;
+  min-height: 56px;
 }
 
 .navbar-title {
@@ -77,22 +87,28 @@ body, #root {
 .layout {
   display: flex;
   flex-direction: row;
-  min-height: 70vh;
+  height: calc(100vh - 56px);
+  min-height: 0;
+  width: 100vw;
+  overflow: hidden;
 }
 
 .sidebar {
   width: 180px;
   background: var(--color-sage);
   border: none;
-  border-radius: 12px;
-  margin-right: 2rem;
+  border-radius: 0;
+  margin: 0;
   padding: 1.2rem 1rem 1.2rem 1.2rem;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  min-height: 350px;
-  height: fit-content;
+  min-height: 0;
+  height: 100%;
+  min-width: 180px;
+  max-width: 180px;
+  overflow: auto;
 }
 
 .sidebar-title {
@@ -130,6 +146,9 @@ body, #root {
   flex-direction: column;
   justify-content: flex-start;
   background: transparent;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
 }
 
 .section-title {
