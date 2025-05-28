@@ -277,15 +277,55 @@ const RecetaDetalleWrapper = ({ categorias }: { categorias: string[] }) => {
   const { id } = useParams();
   const { recetas } = useContext(RecetasContext);
   const receta = recetas.find(r => r.id === Number(id));
+  const [showCategorias, setShowCategorias] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) setShowCategorias(false);
+    else setShowCategorias(true);
+  }, [isMobile]);
+
+  const handleToggleCategorias = () => setShowCategorias(v => !v);
+  const handleToggleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') handleToggleCategorias();
+  };
+
   if (!receta) return <Navigate to="/" replace />;
   return (
     <div className="layout">
+      {isMobile && (
+        <button
+          className="categorias-toggle-btn"
+          aria-label="Mostrar/ocultar categorías"
+          aria-expanded={showCategorias}
+          aria-controls="categorias-sidebar"
+          tabIndex={0}
+          onClick={handleToggleCategorias}
+          onKeyDown={handleToggleKeyDown}
+        >
+          Categorías
+        </button>
+      )}
       <CategoriasSidebar
         categorias={categorias}
         categoriaSeleccionada={receta.categoria}
         onCategoriaClick={() => {}}
+        isMobile={isMobile}
+        visible={showCategorias}
+        {...(isMobile ? { id: 'categorias-sidebar' } : {})}
       />
-      <main className="main-content">
+      <main
+        className={`main-content${isMobile ? (showCategorias ? ' main-content--with-categorias' : ' main-content--without-categorias') : ''}`}
+      >
         <RecetaDetalle receta={receta} />
       </main>
     </div>
