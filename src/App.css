@@ -164,13 +164,14 @@ html {
 }
 
 .recetas-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 1.2rem;
   margin-top: 1.5rem;
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
+  justify-content: flex-start;
 }
 
 .receta-card {
@@ -183,6 +184,10 @@ html {
   align-items: stretch;
   border: 1.5px solid var(--color-dun);
   transition: box-shadow 0.2s;
+  width: 210px;
+  min-width: 210px;
+  max-width: 210px;
+  margin: 0;
 }
 .receta-card:hover {
   box-shadow: 0 4px 16px rgba(65, 72, 51, 0.13);
