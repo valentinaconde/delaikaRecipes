@@ -97,6 +97,21 @@ html {
   transition: background 0.15s;
 }
 .login-icon-btn:hover {
+  background: none;
+}
+
+.admin-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 1.2rem;
+  display: flex;
+  align-items: center;
+  padding: 0.2rem;
+  border-radius: 50%;
+  transition: background 0.15s;
+}
+.admin-icon-btn:hover {
   background: var(--color-reseda);
 }
 

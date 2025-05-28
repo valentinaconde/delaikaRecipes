@@ -95,12 +95,22 @@ const LogoutIcon: React.FC = () => {
   );
 };
 
+const AdminIcon: React.FC = () => {
+  const navigate = useNavigate();
+  return (
+    <button className="admin-icon-btn" aria-label="Ir a admin" onClick={() => navigate('/admin')}>
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M16 3v4a2 2 0 0 1-2 2H8"/></svg>
+    </button>
+  );
+};
+
 const Navbar: React.FC = () => {
   const { logged } = useContext(AuthContext);
   return (
     <nav className="navbar" aria-label="Barra de navegación principal">
       <Link to="/" className="navbar-title" tabIndex={0} aria-label="Ir a inicio">delaika</Link>
       <span className="navbar-spacer" />
+      {logged && <AdminIcon />}
       {logged ? <LogoutIcon /> : <LoginIcon />}
     </nav>
   );
