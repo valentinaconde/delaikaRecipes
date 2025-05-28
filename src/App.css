@@ -211,8 +211,13 @@ html {
 
 .detalle-container {
   padding: 2rem 2.5rem;
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: none;
+  min-height: calc(100vh - 56px);
+  margin: 0;
+  box-sizing: border-box;
+  background: var(--color-bone);
+  display: flex;
+  flex-direction: column;
 }
 .detalle-titulo {
   font-size: 2rem;

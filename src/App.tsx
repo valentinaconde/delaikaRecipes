@@ -89,7 +89,18 @@ const RecetaDetalleWrapper = () => {
   const { id } = useParams();
   const receta = recetas.find(r => r.id === Number(id));
   if (!receta) return <Navigate to="/" replace />;
-  return <RecetaDetalle receta={receta} />;
+  return (
+    <div className="layout">
+      <CategoriasSidebar
+        categorias={categories}
+        categoriaSeleccionada={receta.categoria}
+        onCategoriaClick={() => {}}
+      />
+      <main className="main-content">
+        <RecetaDetalle receta={receta} />
+      </main>
+    </div>
+  );
 };
 
 const App = () => {
