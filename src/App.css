@@ -68,7 +68,7 @@ html {
   background: var(--color-ebony);
   border: none;
   border-radius: 0;
-  padding-right: 10px;
+  padding-right: 20px;
   box-sizing: border-box;
   margin: 0;
   display: flex;
@@ -98,6 +98,21 @@ html {
 }
 .login-icon-btn:hover {
   background: none;
+}
+
+.logout-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 1.2rem;
+  display: flex;
+  align-items: center;
+  padding: 0.2rem;
+  border-radius: 50%;
+  transition: background 0.15s;
+}
+.logout-icon-btn:hover {
+  background: var(--color-reseda);
 }
 
 .admin-icon-btn {
