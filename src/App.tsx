@@ -1,6 +1,6 @@
 import './App.css'
 import { useState, useEffect, createContext, useContext } from 'react'
-import { BrowserRouter as Router, Routes, Route, useParams, Navigate, useSearchParams, useNavigate, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useParams, Navigate, useSearchParams, useNavigate, Link, Outlet } from 'react-router-dom'
 import CategoriasSidebar from './CategoriasSidebar'
 import RecetasGrid from './RecetasGrid'
 import RecetaDetalle from './RecetaDetalle'
@@ -150,14 +150,31 @@ const LoginView: React.FC = () => {
   );
 };
 
+const AdminSidebar: React.FC = () => (
+  <aside className="admin-sidebar">
+    <ul>
+      <li><Link to="/admin/categorias" className="admin-sidebar-link">categorias</Link></li>
+      <li><Link to="/admin/recetas" className="admin-sidebar-link">recetas</Link></li>
+    </ul>
+  </aside>
+);
+
 const AdminLayout: React.FC = () => (
   <div className="admin-layout">
     <header className="admin-header">
       <Link to="/" className="navbar-title" tabIndex={0} aria-label="Ir a inicio">delaika</Link>
     </header>
-    <main className="admin-main">Bienvenido, admin.</main>
+    <div className="admin-content">
+      <AdminSidebar />
+      <main className="admin-main">
+        <Outlet />
+      </main>
+    </div>
   </div>
 );
+
+const AdminCategorias: React.FC = () => <div />;
+const AdminRecetas: React.FC = () => <div />;
 
 const GlobalLoading: React.FC = () => {
   const { loading } = useContext(LoadingContext);
@@ -239,7 +256,11 @@ const App = () => {
             <Route path="/" element={<MainView />} />
             <Route path="/receta/:id" element={<RecetaDetalleWrapper />} />
             <Route path="/login" element={<LoginView />} />
-            <Route path="/admin" element={logged ? <AdminLayout /> : <Navigate to="/login" replace />} />
+            <Route path="/admin" element={logged ? <AdminLayout /> : <Navigate to="/login" replace />}>
+              <Route path="categorias" element={<AdminCategorias />} />
+              <Route path="recetas" element={<AdminRecetas />} />
+              <Route index element={<div />} />
+            </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Router>

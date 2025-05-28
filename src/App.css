@@ -399,9 +399,42 @@ html {
   font-weight: 600;
   padding: 1.2rem 2rem;
 }
+.admin-content {
+  display: flex;
+  height: 100%;
+}
+.admin-sidebar {
+  width: 170px;
+  background: var(--color-sage);
+  padding: 2rem 0.5rem 2rem 1.2rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+.admin-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.admin-sidebar-link {
+  display: block;
+  color: #222;
+  font-size: 1.08rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  text-decoration: none;
+  margin-bottom: 0.7rem;
+  transition: background 0.15s;
+}
+.admin-sidebar-link:hover, .admin-sidebar-link.active {
+  background: var(--color-dun);
+}
 .admin-main {
   flex: 1;
   padding: 2.5rem 2rem;
   color: #222;
   font-size: 1.1rem;
+  background: var(--color-dun);
+  min-height: 100vh;
 }
