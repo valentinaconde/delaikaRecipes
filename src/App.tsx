@@ -281,9 +281,24 @@ const MainView = ({ categorias }: { categorias: string[] }) => {
       <main
         className={`main-content${isMobile ? (showCategorias ? ' main-content--with-categorias' : ' main-content--without-categorias') : ''}`}
       >
-        <span className="section-title">
-          {categoriaSeleccionada ? categoriaSeleccionada : 'todas las recetas'}
-        </span>
+        <nav className="breadcrumb" aria-label="breadcrumb">
+          <a
+            href="/"
+            className="breadcrumb-link"
+            tabIndex={0}
+            aria-label="Ir a recetas"
+            onClick={e => { e.preventDefault(); setCategoriaSeleccionada(null); setSearchParams({}); }}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { setCategoriaSeleccionada(null); setSearchParams({}); } }}
+          >
+            RECETAS
+          </a>
+          {categoriaSeleccionada && (
+            <>
+              <span className="breadcrumb-separator" aria-hidden="true">/</span>
+              <span className="breadcrumb-current">{categoriaSeleccionada}</span>
+            </>
+          )}
+        </nav>
         <RecetasGrid recetas={recetasFiltradas} />
       </main>
     </div>
@@ -358,6 +373,24 @@ const RecetaDetalleWrapper = ({ categorias }: { categorias: string[] }) => {
       <main
         className={`main-content${isMobile ? (showCategorias ? ' main-content--with-categorias' : ' main-content--without-categorias') : ''}`}
       >
+        <nav className="breadcrumb" aria-label="breadcrumb">
+          <a
+            href="/"
+            className="breadcrumb-link"
+            tabIndex={0}
+            aria-label="Ir a recetas"
+            onClick={e => { e.preventDefault(); window.location.href = '/'; }}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { window.location.href = '/'; } }}
+          >
+            RECETAS
+          </a>
+          {receta.categoria && (
+            <>
+              <span className="breadcrumb-separator" aria-hidden="true">/</span>
+              <span className="breadcrumb-current">{receta.categoria}</span>
+            </>
+          )}
+        </nav>
         <RecetaDetalle receta={receta} />
       </main>
     </div>

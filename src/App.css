@@ -639,3 +639,44 @@ html {
     font-size: 0.98rem;
   }
 }
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  font-size: 1.05rem;
+  font-family: inherit;
+  color: #222;
+  margin: 1.1rem 0 0.7rem 0;
+  padding: 0 1.2rem;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+.breadcrumb-link {
+  color: #222;
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  outline: none;
+}
+.breadcrumb-link:focus {
+  text-decoration: underline;
+}
+.breadcrumb-separator {
+  margin: 0 0.7em;
+  color: #888;
+  font-size: 1.1em;
+}
+.breadcrumb-current {
+  color: #222;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 768px) {
+  .breadcrumb {
+    font-size: 0.98rem;
+    margin: 0.7rem 0 0.5rem 0;
+    padding: 0 0.7rem;
+  }
+}
