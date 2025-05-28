@@ -293,6 +293,9 @@ html {
 .detalle-pasos {
   margin-top: 1.5rem;
 }
+.detalle-pasos li{
+  text-align: left;
+}
 .detalle-pasos-titulo {
   font-size: 1.1rem;
   font-weight: 600;
@@ -303,6 +306,10 @@ html {
   margin: 0;
   padding-left: 1.2rem;
   color: #222;
+}
+
+.detalle-ingredientes li{
+  text-align: left;
 }
 
 .loading-spinner {
