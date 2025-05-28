@@ -574,4 +574,43 @@ html {
   .main-content--without-categorias {
     margin-top: 0;
   }
+  .detalle-container {
+    padding: 1.2rem 0.5rem;
+    min-height: unset;
+  }
+  .detalle-titulo {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+    text-align: left;
+  }
+  .detalle-layout {
+    flex-direction: column;
+    gap: 1.2rem;
+    align-items: stretch;
+    margin-bottom: 1.2rem;
+  }
+  .detalle-foto {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    aspect-ratio: 1/1;
+    margin: 0 auto;
+    display: block;
+  }
+  .detalle-ingredientes {
+    margin-top: 0.5rem;
+  }
+  .detalle-ingredientes-titulo,
+  .detalle-pasos-titulo {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .detalle-pasos {
+    margin-top: 1rem;
+  }
+  .detalle-ingredientes ul,
+  .detalle-pasos ol {
+    padding-left: 1.1rem;
+    font-size: 0.98rem;
+  }
 }
