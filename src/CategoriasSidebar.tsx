@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 type CategoriasSidebarProps = {
   categorias: string[];
@@ -7,16 +8,25 @@ type CategoriasSidebarProps = {
 };
 
 const CategoriasSidebar: React.FC<CategoriasSidebarProps> = ({ categorias, categoriaSeleccionada, onCategoriaClick }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const handleClick = (cat: string | null) => {
+    if (location.pathname.startsWith('/receta/')) {
+      // Redirigir a la pantalla principal con filtro
+      navigate(`/?categoria=${encodeURIComponent(cat ?? '')}`);
+    }
+    onCategoriaClick(cat);
+  };
   return (
     <aside className="sidebar" aria-label="Categorías">
       <div className="sidebar-title">categorias</div>
       <ul className="category-list">
         <li
           className={`category-item${!categoriaSeleccionada ? ' selected' : ''}`}
-          onClick={() => onCategoriaClick(null)}
+          onClick={() => handleClick(null)}
           tabIndex={0}
           aria-label="Todas las categorías"
-          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') onCategoriaClick(null); }}
+          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleClick(null); }}
         >
           Todas
         </li>
@@ -24,10 +34,10 @@ const CategoriasSidebar: React.FC<CategoriasSidebarProps> = ({ categorias, categ
           <li
             key={cat}
             className={`category-item${categoriaSeleccionada === cat ? ' selected' : ''}`}
-            onClick={() => onCategoriaClick(cat)}
+            onClick={() => handleClick(cat)}
             tabIndex={0}
             aria-label={cat}
-            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') onCategoriaClick(cat); }}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleClick(cat); }}
           >
             {cat}
           </li>

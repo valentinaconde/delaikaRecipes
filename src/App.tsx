@@ -1,6 +1,6 @@
 import './App.css'
-import { useState } from 'react'
-import { BrowserRouter as Router, Routes, Route, useParams, Navigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route, useParams, Navigate, useSearchParams } from 'react-router-dom'
 import CategoriasSidebar from './CategoriasSidebar'
 import RecetasGrid from './RecetasGrid'
 import RecetaDetalle from './RecetaDetalle'
@@ -66,16 +66,27 @@ const recetas = [
 ];
 
 const MainView = () => {
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const categoriaParam = searchParams.get('categoria');
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string | null>(categoriaParam || null);
+
+  useEffect(() => {
+    setCategoriaSeleccionada(categoriaParam || null);
+  }, [categoriaParam]);
+
   const recetasFiltradas = categoriaSeleccionada
     ? recetas.filter(r => r.categoria === categoriaSeleccionada)
     : recetas;
+  const handleCategoriaClick = (cat: string | null) => {
+    setCategoriaSeleccionada(cat);
+    setSearchParams(cat ? { categoria: cat } : {});
+  };
   return (
     <div className="layout">
       <CategoriasSidebar
         categorias={categories}
         categoriaSeleccionada={categoriaSeleccionada}
-        onCategoriaClick={setCategoriaSeleccionada}
+        onCategoriaClick={handleCategoriaClick}
       />
       <main className="main-content">
         <span className="section-title">recetas</span>
