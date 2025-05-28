@@ -1,5 +1,5 @@
 import './App.css'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, createContext, useContext } from 'react'
 import { BrowserRouter as Router, Routes, Route, useParams, Navigate, useSearchParams } from 'react-router-dom'
 import CategoriasSidebar from './CategoriasSidebar'
 import RecetasGrid from './RecetasGrid'
@@ -65,21 +65,34 @@ const recetas = [
   },
 ];
 
+// Contexto global para loading
+const LoadingContext = createContext<{loading: boolean, setLoading: (v: boolean) => void}>({loading: false, setLoading: () => {}});
+
+const GlobalLoading: React.FC = () => {
+  const { loading } = useContext(LoadingContext);
+  if (!loading) return null;
+  return (
+    <div className="global-loading-overlay">
+      <div className="global-spinner" aria-label="Cargando" />
+    </div>
+  );
+};
+
 const MainView = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoriaParam = searchParams.get('categoria');
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string | null>(categoriaParam || null);
-  const [loading, setLoading] = useState(false);
+  const { setLoading } = useContext(LoadingContext);
 
   useEffect(() => {
     setCategoriaSeleccionada(categoriaParam || null);
     if (categoriaParam !== null) {
       setLoading(true);
-      const timeout = setTimeout(() => setLoading(false), 600); // Simula carga
+      const timeout = setTimeout(() => setLoading(false), 600);
       return () => clearTimeout(timeout);
     }
     setLoading(false);
-  }, [categoriaParam]);
+  }, [categoriaParam, setLoading]);
 
   const recetasFiltradas = categoriaSeleccionada
     ? recetas.filter(r => r.categoria === categoriaSeleccionada)
@@ -98,11 +111,7 @@ const MainView = () => {
       />
       <main className="main-content">
         <span className="section-title">recetas</span>
-        {loading ? (
-          <div className="loading-spinner">Cargando...</div>
-        ) : (
-          <RecetasGrid recetas={recetasFiltradas} />
-        )}
+        <RecetasGrid recetas={recetasFiltradas} />
       </main>
     </div>
   );
@@ -127,17 +136,21 @@ const RecetaDetalleWrapper = () => {
 };
 
 const App = () => {
+  const [loading, setLoading] = useState(false);
   return (
-    <Router>
-      <nav className="navbar" aria-label="Barra de navegación principal">
-        <span className="navbar-title">delaika</span>
-      </nav>
-      <Routes>
-        <Route path="/" element={<MainView />} />
-        <Route path="/receta/:id" element={<RecetaDetalleWrapper />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
+    <LoadingContext.Provider value={{ loading, setLoading }}>
+      <Router>
+        <GlobalLoading />
+        <nav className="navbar" aria-label="Barra de navegación principal">
+          <span className="navbar-title">delaika</span>
+        </nav>
+        <Routes>
+          <Route path="/" element={<MainView />} />
+          <Route path="/receta/:id" element={<RecetaDetalleWrapper />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
+    </LoadingContext.Provider>
   )
 }
 
