@@ -157,3 +157,44 @@ html {
   font-family: inherit;
   margin-top: 0.5rem;
 }
+
+.recetas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.receta-card {
+  background: var(--color-bone);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(65, 72, 51, 0.07);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  border: 1.5px solid var(--color-dun);
+  transition: box-shadow 0.2s;
+}
+.receta-card:hover {
+  box-shadow: 0 4px 16px rgba(65, 72, 51, 0.13);
+}
+
+.receta-img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  background: var(--color-sage);
+}
+
+.receta-titulo {
+  font-size: 1rem;
+  color: #222;
+  font-weight: 500;
+  padding: 0.7rem 1rem 1rem 1rem;
+  text-align: left;
+  background: var(--color-bone);
+}
