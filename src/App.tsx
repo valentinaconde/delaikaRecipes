@@ -69,9 +69,16 @@ const MainView = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoriaParam = searchParams.get('categoria');
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string | null>(categoriaParam || null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setCategoriaSeleccionada(categoriaParam || null);
+    if (categoriaParam !== null) {
+      setLoading(true);
+      const timeout = setTimeout(() => setLoading(false), 600); // Simula carga
+      return () => clearTimeout(timeout);
+    }
+    setLoading(false);
   }, [categoriaParam]);
 
   const recetasFiltradas = categoriaSeleccionada
@@ -79,6 +86,7 @@ const MainView = () => {
     : recetas;
   const handleCategoriaClick = (cat: string | null) => {
     setCategoriaSeleccionada(cat);
+    setLoading(true);
     setSearchParams(cat ? { categoria: cat } : {});
   };
   return (
@@ -90,7 +98,11 @@ const MainView = () => {
       />
       <main className="main-content">
         <span className="section-title">recetas</span>
-        <RecetasGrid recetas={recetasFiltradas} />
+        {loading ? (
+          <div className="loading-spinner">Cargando...</div>
+        ) : (
+          <RecetasGrid recetas={recetasFiltradas} />
+        )}
       </main>
     </div>
   );
