@@ -576,7 +576,7 @@ html {
     margin-top: 0;
   }
   .detalle-container {
-    padding: 1.2rem 0.5rem;
+    padding: 20px;
     min-height: unset;
   }
   .detalle-titulo {
@@ -592,7 +592,6 @@ html {
   }
   .detalle-foto {
     width: 100%;
-    max-width: 320px;
     height: auto;
     aspect-ratio: 1/1;
     margin: 0 auto;
@@ -600,14 +599,21 @@ html {
   }
   .detalle-ingredientes {
     margin-top: 0.5rem;
+    text-align: left;
   }
   .detalle-ingredientes-titulo,
   .detalle-pasos-titulo {
+    text-align: left;
     font-size: 1rem;
     margin-bottom: 0.5rem;
   }
   .detalle-pasos {
     margin-top: 1rem;
+    
+  }
+   .detalle-pasos li{
+    text-align: left;
+    
   }
   .detalle-ingredientes ul,
   .detalle-pasos ol {
