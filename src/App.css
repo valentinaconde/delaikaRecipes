@@ -249,6 +249,7 @@ html {
   background: var(--color-bone);
   display: flex;
   flex-direction: column;
+  align-items: start;
 }
 .detalle-titulo {
   font-size: 2rem;
@@ -272,7 +273,7 @@ html {
   border: 2px solid var(--color-dun);
 }
 .detalle-ingredientes {
-  flex: 1;
+  /* flex: 1; */
 }
 .detalle-ingredientes-titulo {
   font-size: 1.1rem;
