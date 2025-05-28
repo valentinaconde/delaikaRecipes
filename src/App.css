@@ -419,13 +419,7 @@ html {
   display: flex;
   flex-direction: column;
 }
-.admin-header {
-  background: var(--color-ebony);
-  color: #fff;
-  font-size: 1.3rem;
-  font-weight: 600;
-  padding: 1.2rem 2rem;
-}
+
 .admin-content {
   display: flex;
   height: 100%;
@@ -721,18 +715,11 @@ html {
   width: auto;
   display: block;
 }
-.admin-header .navbar-logo-link {
-  height: 40px;
-}
-.admin-header .navbar-logo {
-  height: 32px;
-}
+
 
 .admin-bg-image-wrapper {
-  position: absolute;
   inset: 0;
   width: 100%;
-  height: 100%;
   z-index: 0;
   display: flex;
   align-items: center;
@@ -740,11 +727,9 @@ html {
   pointer-events: none;
 }
 .admin-bg-image {
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
   max-width: 100%;
   max-height: 100%;
+  object-fit: cover;
   display: block;
   opacity: 1;
 }
