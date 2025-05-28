@@ -1,13 +1,15 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-type CategoriasSidebarProps = {
+export type CategoriasSidebarProps = {
   categorias: string[];
   categoriaSeleccionada: string | null;
   onCategoriaClick: (categoria: string | null) => void;
+  isMobile?: boolean;
+  visible?: boolean;
 };
 
-const CategoriasSidebar: React.FC<CategoriasSidebarProps> = ({ categorias, categoriaSeleccionada, onCategoriaClick }) => {
+const CategoriasSidebar: React.FC<CategoriasSidebarProps> = ({ categorias, categoriaSeleccionada, onCategoriaClick, isMobile = false, visible = true }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const handleClick = (cat: string | null) => {
@@ -18,7 +20,11 @@ const CategoriasSidebar: React.FC<CategoriasSidebarProps> = ({ categorias, categ
     onCategoriaClick(cat);
   };
   return (
-    <aside className="sidebar" aria-label="Categorías">
+    <aside
+      className={`sidebar${isMobile ? (visible ? ' sidebar--visible' : ' sidebar--hidden') : ''}`}
+      aria-label="Categorías"
+      aria-hidden={isMobile && !visible}
+    >
       <div className="sidebar-title">categorias</div>
       <ul className="category-list">
         <li

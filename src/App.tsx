@@ -198,6 +198,22 @@ const MainView = ({ categorias }: { categorias: string[] }) => {
   const categoriaParam = searchParams.get('categoria');
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string | null>(categoriaParam || null);
   const { setLoading } = useContext(LoadingContext);
+  const [showCategorias, setShowCategorias] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) setShowCategorias(false);
+    else setShowCategorias(true);
+  }, [isMobile]);
 
   useEffect(() => {
     setCategoriaSeleccionada(categoriaParam || null);
@@ -217,15 +233,39 @@ const MainView = ({ categorias }: { categorias: string[] }) => {
     setCategoriaSeleccionada(cat);
     setLoading(true);
     setSearchParams(cat ? { categoria: cat } : {});
+    if (isMobile) setShowCategorias(false);
+  };
+  const handleToggleCategorias = () => setShowCategorias(v => !v);
+  const handleToggleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') handleToggleCategorias();
   };
   return (
     <div className="layout">
+      {isMobile && (
+        <button
+          className="categorias-toggle-btn"
+          aria-label="Mostrar/ocultar categorías"
+          aria-expanded={showCategorias}
+          aria-controls="categorias-sidebar"
+          tabIndex={0}
+          onClick={handleToggleCategorias}
+          onKeyDown={handleToggleKeyDown}
+        >
+          Categorías
+        </button>
+      )}
       <CategoriasSidebar
         categorias={categorias}
         categoriaSeleccionada={categoriaSeleccionada}
         onCategoriaClick={handleCategoriaClick}
+        isMobile={isMobile}
+        visible={showCategorias}
+        // id for aria-controls
+        {...(isMobile ? { id: 'categorias-sidebar' } : {})}
       />
-      <main className="main-content">
+      <main
+        className={`main-content${isMobile ? (showCategorias ? ' main-content--with-categorias' : ' main-content--without-categorias') : ''}`}
+      >
         <span className="section-title">recetas</span>
         <RecetasGrid recetas={recetasFiltradas} />
       </main>
