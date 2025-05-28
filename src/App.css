@@ -683,6 +683,37 @@ html {
     pointer-events: auto;
     padding: 1.2rem 1.2rem 0.5rem 1.2rem;
   }
+  .admin-sidebar {
+    width: 100vw;
+    min-width: 0;
+    max-width: none;
+    height: auto;
+    min-height: 0;
+    padding: 1.2rem 1.2rem 0.5rem 1.2rem;
+    border-radius: 0;
+    box-shadow: none;
+    position: relative;
+    z-index: 1;
+    transition: max-height 0.3s cubic-bezier(.4,0,.2,1), opacity 0.2s;
+    overflow: hidden;
+    background: var(--color-sage);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  .admin-sidebar--hidden {
+    max-height: 0;
+    opacity: 0;
+    padding: 0 1.2rem;
+    pointer-events: none;
+  }
+  .admin-sidebar--visible {
+    max-height: 400px;
+    opacity: 1;
+    pointer-events: auto;
+    padding: 1.2rem 1.2rem 0.5rem 1.2rem;
+  }
   .main-content {
     padding: 0 0 1.5rem 0;
     margin-top: 0;
@@ -739,8 +770,72 @@ html {
     padding-left: 1.1rem;
     font-size: 0.98rem;
   }
+  .admin-layout {
+    min-height: 100vh;
+    flex-direction: column;
+  }
+  .admin-content {
+    flex-direction: column;
+    height: auto;
+  }
+  .admin-sidebar {
+    width: 100vw;
+    min-width: 0;
+    max-width: none;
+    padding: 1.2rem 1.2rem 0.5rem 1.2rem;
+    border-radius: 0;
+    box-shadow: none;
+    position: relative;
+    z-index: 1;
+    transition: max-height 0.3s cubic-bezier(.4,0,.2,1), opacity 0.2s;
+    overflow: hidden;
+    background: var(--color-sage);
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  .admin-main {
+    padding: 1.2rem 0.5rem;
+    min-height: unset;
+    font-size: 1rem;
+  }
+  .abml-categorias-list, .abml-recetas-list {
+    width: 100%;
+  }
+  .abml-categorias-item, .abml-recetas-item {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.7rem 0.5rem;
+    font-size: 1rem;
+    gap: 0.5rem;
+  }
+  .abml-categorias-item > span, .abml-recetas-item > span {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 0.2rem;
+  }
+  .abml-categorias-item button, .abml-recetas-item button {
+    margin-left: 0;
+    margin-right: 0.5rem;
+    margin-bottom: 0.2rem;
+    align-self: flex-start;
+  }
+  .abml-categorias-item button:last-child, .abml-recetas-item button:last-child {
+    margin-right: 0;
+  }
+  .abml-categorias-item input[type="text"] {
+    width: 100%;
+    min-width: 0;
+    font-size: 1rem;
+  }
+  .abml-recetas-form, .abml-categorias-form {
+    padding: 1rem 0.5rem;
+    border-radius: 8px;
+    gap: 0.5rem;
+  }
 }
-
 .breadcrumb {
   display: flex;
   align-items: center;

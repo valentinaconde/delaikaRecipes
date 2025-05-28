@@ -162,14 +162,73 @@ const LoginView: React.FC = () => {
   );
 };
 
-const AdminSidebar: React.FC = () => (
-  <aside className="admin-sidebar">
-    <ul>
-      <li><Link to="/admin/categorias" className="admin-sidebar-link">categorias</Link></li>
-      <li><Link to="/admin/recetas" className="admin-sidebar-link">recetas</Link></li>
-    </ul>
-  </aside>
-);
+const AdminSidebar: React.FC = () => {
+  const [showMenu, setShowMenu] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) setShowMenu(false);
+    else setShowMenu(true);
+  }, [isMobile]);
+
+  const handleToggleMenu = () => setShowMenu(v => !v);
+  const handleToggleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') handleToggleMenu();
+  };
+
+  return (
+    <>
+      {isMobile && (
+        <button
+          className="categorias-toggle-btn"
+          aria-label="Mostrar/ocultar menú admin"
+          aria-expanded={showMenu}
+          aria-controls="admin-sidebar-menu"
+          tabIndex={0}
+          onClick={handleToggleMenu}
+          onKeyDown={handleToggleKeyDown}
+          style={{ justifyContent: 'space-between' }}
+        >
+          <span>Menú</span>
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            focusable="false"
+            style={{ marginLeft: 'auto' }}
+          >
+            <rect x="4" y="7" width="16" height="2" rx="1" fill="#414833" />
+            <rect x="4" y="11" width="16" height="2" rx="1" fill="#414833" />
+            <rect x="4" y="15" width="16" height="2" rx="1" fill="#414833" />
+          </svg>
+        </button>
+      )}
+      <aside
+        className={`admin-sidebar${isMobile ? (showMenu ? ' sidebar--visible' : ' sidebar--hidden') : ''}`}
+        id={isMobile ? 'admin-sidebar-menu' : undefined}
+        aria-label="Menú admin"
+        aria-hidden={isMobile && !showMenu}
+      >
+        <ul>
+          <li><Link to="/admin/categorias" className="admin-sidebar-link">categorias</Link></li>
+          <li><Link to="/admin/recetas" className="admin-sidebar-link">recetas</Link></li>
+        </ul>
+      </aside>
+    </>
+  );
+};
 
 const AdminLayout: React.FC = () => (
   <div className="admin-layout">
