@@ -533,13 +533,14 @@ html {
   margin: 0;
 }
 .abml-categorias-item {
+  border-bottom: 1px solid var(--color-sage);
+  width: 400px;
   display: flex;
   align-items: center;
   gap: 0;
   margin-bottom: 0.7rem;
   background: var(--color-dun);
   padding: 0.7rem 1rem;
-  border-radius: 8px;
   color: #222;
   font-size: 1.05rem;
   font-family: inherit;
