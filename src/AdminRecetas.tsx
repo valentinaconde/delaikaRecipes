@@ -94,8 +94,11 @@ const AdminRecetas: React.FC = () => {
         {recetas.map((receta, idx) => (
           <li key={receta.id} className="abml-recetas-item">
             <span><b>{receta.titulo}</b> ({receta.categoria || 'Sin categoría'})</span>
-            <button onClick={() => handleEdit(idx)}>Editar</button>
-            <button onClick={() => handleDelete(receta.id)}>Eliminar</button>
+            <div>
+              <button onClick={() => handleEdit(idx)}>Editar</button>
+              <button onClick={() => handleDelete(receta.id)}>Eliminar</button>
+            </div>
+           
           </li>
         ))}
       </ul>

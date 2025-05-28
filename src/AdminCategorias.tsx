@@ -73,11 +73,8 @@ const AdminCategorias: React.FC = () => {
             ) : (
               <>
                 <span>{cat}</span>
-                <div>
-                  <button onClick={() => handleEdit(idx)}>Editar</button>
+                <button onClick={() => handleEdit(idx)}>Editar</button>
                 <button onClick={() => handleDelete(idx)}>Eliminar</button>
-                  </div>
-                
               </>
             )}
           </li>
