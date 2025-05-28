@@ -173,15 +173,23 @@ const AdminSidebar: React.FC = () => (
 
 const AdminLayout: React.FC = () => (
   <div className="admin-layout">
-    {/* <header className="admin-header">
+    <header className="admin-header">
       <Link to="/" className="navbar-logo-link" tabIndex={0} aria-label="Ir a inicio">
         <img src="/logo.png" alt="delaika logo" className="navbar-logo" height={32} />
       </Link>
-    </header> */}
+    </header>
     <div className="admin-content">
       <AdminSidebar />
       <main className="admin-main">
         <Outlet />
+        {/* Imagen de fondo en la pantalla principal del área de admin */}
+        <Routes>
+          <Route index element={
+            <div className="admin-bg-image-wrapper">
+              <img src="/admin.png" alt="admin area" className="admin-bg-image" />
+            </div>
+          } />
+        </Routes>
       </main>
     </div>
   </div>
