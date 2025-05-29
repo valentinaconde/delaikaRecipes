@@ -177,10 +177,10 @@ html {
   color: #222;
   margin-bottom: 0.7rem;
   cursor: pointer;
-  border-radius: 6px;
   padding: 0.2rem 0.5rem;
   transition: background 0.15s;
   background: transparent;
+  border-bottom: 1px solid #bbc497;
 }
 
 .category-item a {
@@ -493,7 +493,6 @@ html {
   color: #222;
   margin-bottom: 0.7rem;
   cursor: pointer;
-  border-radius: 6px;
   padding: 0.2rem 0.5rem;
   transition: background 0.15s;
   background: transparent;
