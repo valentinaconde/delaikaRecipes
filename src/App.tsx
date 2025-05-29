@@ -380,7 +380,7 @@ const AdminLayout: React.FC = () => {
           onClick={() => setShowMenu(v => !v)}
           style={{ justifyContent: 'space-between', width: '100%', display: 'flex', alignItems: 'center', background: 'var(--color-sage)', border: 'none', borderRadius: 0, fontWeight: 600, fontSize: '1.1rem', padding: '1rem 1.2rem', margin: 0, cursor: 'pointer' }}
         >
-          <span style={{ fontWeight: 600 }}>MENU</span>
+          <span style={{ fontWeight: 600 }}>MENÚ</span>
           <svg
             width="28"
             height="28"
@@ -398,7 +398,7 @@ const AdminLayout: React.FC = () => {
         </button>
       )}
       <aside className={`admin-sidebar${isMobile ? (showMenu ? ' admin-sidebar--visible' : ' admin-sidebar--hidden') : ''}`} id="admin-sidebar">
-        <div className="sidebar-title">MENU</div>
+        <div className="sidebar-title">MENÚ</div>
         <ul className="category-list">
           <li className="category-item">
             <Link to="/admin/categorias">Categorías</Link>
