@@ -182,6 +182,10 @@ html {
   transition: background 0.15s;
   background: transparent;
 }
+
+.category-item a {
+  color : #222;
+}
 .category-item:hover {
   background: var(--color-dun);
 }
@@ -634,7 +638,7 @@ html {
 }
 .abml-categorias-item {
   border-bottom: 1px solid var(--color-sage);
-  width: 400px;
+  max-width: 400px;
   display: flex;
   align-items: center;
   gap: 0;
