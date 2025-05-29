@@ -110,7 +110,6 @@ const AdminCategorias: React.FC = () => {
           Agregar
         </button>
       </div>
-      {loading && <div>Cargando...</div>}
       {error && <div style={{color: 'red'}}>{error}</div>}
       {success && <div style={{color: 'green'}}>{success}</div>}
       <ul className="abml-categorias-list">

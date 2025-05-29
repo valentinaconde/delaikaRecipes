@@ -168,7 +168,6 @@ const AdminRecetas: React.FC = () => {
           <button onClick={() => { setEditId(null); setForm(initialForm); }} disabled={loading}>Cancelar</button>
         )}
       </div>
-      {loading && <div>Cargando...</div>}
       {error && <div style={{color: 'red'}}>{error}</div>}
       {success && <div style={{color: 'green'}}>{success}</div>}
       <ul className="abml-recetas-list">

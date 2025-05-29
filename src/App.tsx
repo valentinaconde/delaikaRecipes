@@ -231,7 +231,6 @@ const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void
             </>
           )}
         </nav>
-        {loading && <div>Cargando...</div>}
         {error && <div style={{color: 'red'}}>{error}</div>}
         <RecetasGrid recetas={recetas} />
       </main>
@@ -344,7 +343,6 @@ const RecetaDetalleWrapper: React.FC<{ setGlobalLoading: (v: boolean) => void }>
             </>
           )}
         </nav>
-        {loading && <div>Cargando...</div>}
         {error && <div style={{color: 'red'}}>{error}</div>}
         {!loading && !error && receta && (
           <RecetaDetalle receta={{
@@ -425,7 +423,6 @@ const AdminLayout: React.FC = () => {
 // Componente para proteger rutas admin
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { session, loading } = useAuth();
-  if (loading) return <div>Cargando...</div>;
   if (!session) return <Navigate to="/login" replace />;
   return <>{children}</>;
 };
