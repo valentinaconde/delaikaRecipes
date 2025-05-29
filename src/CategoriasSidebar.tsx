@@ -1,10 +1,11 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+export type CategoriaSidebar = { id: number; nombre: string };
 export type CategoriasSidebarProps = {
-  categorias: string[];
-  categoriaSeleccionada: string | null;
-  onCategoriaClick: (categoria: string | null) => void;
+  categorias: CategoriaSidebar[];
+  categoriaSeleccionada: CategoriaSidebar | null;
+  onCategoriaClick: (categoria: CategoriaSidebar | null) => void;
   isMobile?: boolean;
   visible?: boolean;
 };
@@ -12,10 +13,10 @@ export type CategoriasSidebarProps = {
 const CategoriasSidebar: React.FC<CategoriasSidebarProps> = ({ categorias, categoriaSeleccionada, onCategoriaClick, isMobile = false, visible = true }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const handleClick = (cat: string | null) => {
+  const handleClick = (cat: CategoriaSidebar | null) => {
     if (location.pathname.startsWith('/receta/')) {
       // Redirigir a la pantalla principal con filtro
-      navigate(`/?categoria=${encodeURIComponent(cat ?? '')}`);
+      navigate(`/?categoria=${encodeURIComponent(cat?.nombre ?? '')}`);
     }
     onCategoriaClick(cat);
   };
@@ -38,14 +39,14 @@ const CategoriasSidebar: React.FC<CategoriasSidebarProps> = ({ categorias, categ
         </li>
         {categorias.map((cat) => (
           <li
-            key={cat}
-            className={`category-item${categoriaSeleccionada === cat ? ' selected' : ''}`}
+            key={cat.id}
+            className={`category-item${categoriaSeleccionada?.id === cat.id ? ' selected' : ''}`}
             onClick={() => handleClick(cat)}
             tabIndex={0}
-            aria-label={cat}
+            aria-label={cat.nombre}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleClick(cat); }}
           >
-            {cat}
+            {cat.nombre}
           </li>
         ))}
       </ul>
