@@ -1,56 +1,112 @@
-import { useContext, useEffect, useState } from 'react';
-import { RecetasContext } from './App';
+import { useEffect, useState } from 'react';
 import { supabase } from './supabaseClient';
 
 const initialForm = {
   titulo: '',
   imagen: '',
   categoria: '',
-  ingredientes: '',
-  pasos: '',
+  ingredientes: '', // string separado por coma
+  pasos: '', // string separado por salto de línea
+};
+
+type Categoria = { id: number; nombre: string };
+type Receta = {
+  id: number;
+  titulo: string;
+  imagen: string;
+  categoria: string;
+  ingredientes: string[];
+  pasos: string[];
+  idCategoria: number | null;
 };
 
 const AdminRecetas: React.FC = () => {
-  const { recetas, setRecetas } = useContext(RecetasContext);
-  const [categorias, setCategorias] = useState<string[]>([]);
+  const [recetas, setRecetas] = useState<Receta[]>([]);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [form, setForm] = useState(initialForm);
-  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [editId, setEditId] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState('');
 
-  useEffect(() => {
-    const fetchCategorias = async () => {
-      const { data, error } = await supabase.from('categorias').select('nombre').order('nombre', { ascending: true });
-      if (data) setCategorias(data.map((c: { nombre: string }) => c.nombre));
-    };
-    fetchCategorias();
-  }, []);
+  // Fetch categorías y recetas+ingredientes
+  const fetchAll = async () => {
+    setLoading(true);
+    setError(null);
+    // Categorías
+    const { data: catData } = await supabase.from('categorias').select('id, nombre').order('nombre');
+    setCategorias(catData || []);
+    // Recetas
+    const { data: recData, error: recError } = await supabase.from('recetas').select('*').order('id', { ascending: false });
+    if (recError) { setError(recError.message); setLoading(false); return; }
+    // Ingredientes
+    const { data: ingData } = await supabase.from('ingredientes').select('*');
+    // Mapear recetas con ingredientes
+    const recetasMap: Receta[] = (recData || []).map(r => ({
+      id: r.id,
+      titulo: r.titulo,
+      imagen: r.image,
+      categoria: catData?.find(c => c.id === r.idCategoria)?.nombre || '',
+      ingredientes: (ingData || []).filter(i => i.idReceta === r.id).map(i => i.detalle),
+      pasos: r.pasos ? r.pasos.split('\n').map((p: string) => p.trim()).filter(Boolean) : [],
+      idCategoria: r.idCategoria,
+    }));
+    setRecetas(recetasMap);
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchAll(); }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleAdd = () => {
-    if (!form.titulo.trim()) return;
-    setRecetas(prev => [
-      ...prev,
-      {
-        id: Date.now(),
-        titulo: form.titulo,
-        imagen: form.imagen,
-        categoria: form.categoria,
-        ingredientes: form.ingredientes.split(',').map(i => i.trim()).filter(Boolean),
-        pasos: form.pasos.split('\n').map(p => p.trim()).filter(Boolean),
-      },
-    ]);
+  // AGREGAR
+  const handleAdd = async () => {
+    if (!form.titulo.trim() || !form.categoria) return;
+    setLoading(true); setError(null); setSuccess('');
+    // Buscar idCategoria
+    const cat = categorias.find(c => c.nombre === form.categoria);
+    if (!cat) { setError('Categoría inválida'); setLoading(false); return; }
+    // Insertar receta
+    const { data: recetaInsert, error: recetaError } = await supabase.from('recetas').insert({
+      titulo: form.titulo.trim(),
+      image: form.imagen.trim(),
+      idCategoria: cat.id,
+      pasos: form.pasos.trim(),
+    }).select().single();
+    if (recetaError || !recetaInsert) { setError(recetaError?.message || 'Error al agregar receta'); setLoading(false); return; }
+    // Insertar ingredientes
+    const ingredientesArr = form.ingredientes.split(',').map(i => i.trim()).filter(Boolean);
+    if (ingredientesArr.length > 0) {
+      const { error: ingError } = await supabase.from('ingredientes').insert(
+        ingredientesArr.map(detalle => ({ detalle, idReceta: recetaInsert.id }))
+      );
+      if (ingError) { setError(ingError.message); setLoading(false); return; }
+    }
+    setSuccess('Receta agregada');
     setForm(initialForm);
+    await fetchAll();
+    setLoading(false);
   };
 
-  const handleDelete = (id: number) => {
-    setRecetas(prev => prev.filter(r => r.id !== id));
+  // ELIMINAR
+  const handleDelete = async (id: number) => {
+    if (!window.confirm('¿Eliminar esta receta?')) return;
+    setLoading(true); setError(null); setSuccess('');
+    // Eliminar ingredientes
+    await supabase.from('ingredientes').delete().eq('idReceta', id);
+    // Eliminar receta
+    const { error } = await supabase.from('recetas').delete().eq('id', id);
+    if (error) { setError(error.message); setLoading(false); return; }
+    setSuccess('Receta eliminada');
+    await fetchAll();
+    setLoading(false);
   };
 
-  const handleEdit = (idx: number) => {
-    const receta = recetas[idx];
-    setEditIndex(idx);
+  // EDITAR
+  const handleEdit = (receta: Receta) => {
+    setEditId(receta.id);
     setForm({
       titulo: receta.titulo,
       imagen: receta.imagen,
@@ -60,53 +116,69 @@ const AdminRecetas: React.FC = () => {
     });
   };
 
-  const handleEditSave = () => {
-    setRecetas(prev => prev.map((r, i) =>
-      i === editIndex
-        ? {
-            ...r,
-            titulo: form.titulo,
-            imagen: form.imagen,
-            categoria: form.categoria,
-            ingredientes: form.ingredientes.split(',').map(i => i.trim()).filter(Boolean),
-            pasos: form.pasos.split('\n').map(p => p.trim()).filter(Boolean),
-          }
-        : r
-    ));
-    setEditIndex(null);
+  const handleEditSave = async () => {
+    if (editId === null) return;
+    setLoading(true); setError(null); setSuccess('');
+    const cat = categorias.find(c => c.nombre === form.categoria);
+    if (!cat) { setError('Categoría inválida'); setLoading(false); return; }
+    // Actualizar receta
+    const { error: recError } = await supabase.from('recetas').update({
+      titulo: form.titulo.trim(),
+      image: form.imagen.trim(),
+      idCategoria: cat.id,
+      pasos: form.pasos.trim(),
+      updated_at: new Date().toISOString(),
+    }).eq('id', editId);
+    if (recError) { setError(recError.message); setLoading(false); return; }
+    // Eliminar ingredientes viejos
+    await supabase.from('ingredientes').delete().eq('idReceta', editId);
+    // Insertar nuevos ingredientes
+    const ingredientesArr = form.ingredientes.split(',').map(i => i.trim()).filter(Boolean);
+    if (ingredientesArr.length > 0) {
+      const { error: ingError } = await supabase.from('ingredientes').insert(
+        ingredientesArr.map(detalle => ({ detalle, idReceta: editId }))
+      );
+      if (ingError) { setError(ingError.message); setLoading(false); return; }
+    }
+    setSuccess('Receta actualizada');
+    setEditId(null);
     setForm(initialForm);
+    await fetchAll();
+    setLoading(false);
   };
 
   return (
     <div className="admin-recetas">
       <h2>Recetas</h2>
       <div className="abml-recetas-form">
-        <input name="titulo" type="text" placeholder="Título" value={form.titulo} onChange={handleChange} />
-        <input name="imagen" type="text" placeholder="URL de imagen" value={form.imagen} onChange={handleChange} />
-        <select name="categoria" value={form.categoria} onChange={handleChange}>
+        <input name="titulo" type="text" placeholder="Título" value={form.titulo} onChange={handleChange} disabled={loading} />
+        <input name="imagen" type="text" placeholder="URL de imagen" value={form.imagen} onChange={handleChange} disabled={loading} />
+        <select name="categoria" value={form.categoria} onChange={handleChange} disabled={loading}>
           <option value="">Sin categoría</option>
-          {categorias.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+          {categorias.map(cat => <option key={cat.id} value={cat.nombre}>{cat.nombre}</option>)}
         </select>
-        <textarea name="ingredientes" placeholder="Ingredientes (separados por coma)" value={form.ingredientes} onChange={handleChange} />
-        <textarea name="pasos" placeholder="Pasos (uno por línea)" value={form.pasos} onChange={handleChange} />
-        {editIndex === null ? (
-          <button onClick={handleAdd}>Agregar</button>
+        <textarea name="ingredientes" placeholder="Ingredientes (separados por coma)" value={form.ingredientes} onChange={handleChange} disabled={loading} />
+        <textarea name="pasos" placeholder="Pasos (uno por línea)" value={form.pasos} onChange={handleChange} disabled={loading} />
+        {editId === null ? (
+          <button onClick={handleAdd} disabled={loading}>Agregar</button>
         ) : (
-          <button onClick={handleEditSave}>Guardar</button>
+          <button onClick={handleEditSave} disabled={loading}>Guardar</button>
         )}
-        {editIndex !== null && (
-          <button onClick={() => { setEditIndex(null); setForm(initialForm); }}>Cancelar</button>
+        {editId !== null && (
+          <button onClick={() => { setEditId(null); setForm(initialForm); }} disabled={loading}>Cancelar</button>
         )}
       </div>
+      {loading && <div>Cargando...</div>}
+      {error && <div style={{color: 'red'}}>{error}</div>}
+      {success && <div style={{color: 'green'}}>{success}</div>}
       <ul className="abml-recetas-list">
-        {recetas.map((receta, idx) => (
+        {recetas.map((receta) => (
           <li key={receta.id} className="abml-recetas-item">
             <span><b>{receta.titulo}</b> ({receta.categoria || 'Sin categoría'})</span>
             <div>
-              <button onClick={() => handleEdit(idx)}>Editar</button>
-              <button onClick={() => handleDelete(receta.id)}>Eliminar</button>
+              <button onClick={() => handleEdit(receta)} disabled={loading}>Editar</button>
+              <button onClick={() => handleDelete(receta.id)} disabled={loading}>Eliminar</button>
             </div>
-           
           </li>
         ))}
       </ul>
