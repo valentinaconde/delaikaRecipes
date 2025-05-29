@@ -285,6 +285,41 @@ const RecetaDetalleWrapper: React.FC = () => {
         {...(isMobile ? { id: 'categorias-sidebar' } : {})}
       />
       <main className="main-content">
+        <nav className="breadcrumb" aria-label="breadcrumb">
+          <a
+            href="/"
+            className="breadcrumb-link"
+            tabIndex={0}
+            aria-label="Ir a recetas"
+            onClick={e => { e.preventDefault(); window.location.href = '/'; }}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') window.location.href = '/'; }}
+          >
+            RECETAS
+          </a>
+          {receta && receta.idCategoria && categorias.length > 0 && (
+            <>
+              <span className="breadcrumb-separator" aria-hidden="true">/</span>
+              <a
+                href={`/?categoria=${encodeURIComponent(categorias.find(c => c.id === receta.idCategoria)?.nombre || '')}`}
+                className="breadcrumb-link"
+                tabIndex={0}
+                aria-label={`Ver recetas de ${categorias.find(c => c.id === receta.idCategoria)?.nombre || ''}`}
+                onClick={e => {
+                  e.preventDefault();
+                  window.location.href = `/?categoria=${encodeURIComponent(categorias.find(c => c.id === receta.idCategoria)?.nombre || '')}`;
+                }}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    window.location.href = `/?categoria=${encodeURIComponent(categorias.find(c => c.id === receta.idCategoria)?.nombre || '')}`;
+                  }
+                }}
+                style={{ textTransform: 'uppercase' }}
+              >
+                {categorias.find(c => c.id === receta.idCategoria)?.nombre || ''}
+              </a>
+            </>
+          )}
+        </nav>
         {loading && <div>Cargando...</div>}
         {error && <div style={{color: 'red'}}>{error}</div>}
         {!loading && !error && receta && (
