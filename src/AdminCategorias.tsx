@@ -17,7 +17,6 @@ type EditState = {
 
 const AdminCategorias: React.FC = () => {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [newNombre, setNewNombre] = useState('');
   const [edit, setEdit] = useState<EditState>(null);
@@ -25,15 +24,12 @@ const AdminCategorias: React.FC = () => {
   const [success, setSuccess] = useState('');
 
   const fetchCategorias = async () => {
-    setLoading(true);
-    setError(null);
     const { data, error } = await supabase
       .from('categorias')
       .select('*')
       .order('nombre', { ascending: true });
     if (error) setError(error.message);
     else setCategorias(data || []);
-    setLoading(false);
   };
 
   useEffect(() => {

@@ -120,7 +120,6 @@ const LoginView: React.FC = () => {
 const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void }) => {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<{ id: number; nombre: string } | null>(null);
   const [showCategorias, setShowCategorias] = useState(false); // Por defecto cerrado en mobile
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [categorias, setCategorias] = useState<{ id: number; nombre: string }[]>([]);
   const [recetas, setRecetas] = useState<any[]>([]);
@@ -136,11 +135,9 @@ const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void
   useEffect(() => {
     const fetchCategorias = async () => {
       setGlobalLoading(true);
-      setLoading(true);
       const { data, error } = await supabase.from('categorias').select('id, nombre').order('nombre');
       if (error) setError(error.message);
       else setCategorias(data || []);
-      setLoading(false);
       setGlobalLoading(false);
     };
     fetchCategorias();
@@ -150,7 +147,6 @@ const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void
   useEffect(() => {
     const fetchRecetas = async () => {
       setGlobalLoading(true);
-      setLoading(true);
       setError(null);
       let query = supabase.from('recetas').select('*');
       if (categoriaSeleccionada) {
@@ -159,16 +155,10 @@ const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void
       const { data, error } = await query.order('id', { ascending: false });
       if (error) setError(error.message);
       else setRecetas(data || []);
-      setLoading(false);
       setGlobalLoading(false);
     };
     fetchRecetas();
   }, [categoriaSeleccionada]);
-
-  const handleCategoriaClick = (cat: { id: number; nombre: string } | null) => {
-    setCategoriaSeleccionada(cat);
-    if (showCategorias) setShowCategorias(false);
-  };
 
   const handleToggleCategorias = () => setShowCategorias(v => !v);
 
@@ -210,7 +200,6 @@ const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void
         }}
         isMobile={isMobile}
         visible={isMobile ? showCategorias : true}
-        id="categorias-sidebar"
       />
       <main className={`main-content${isMobile && showCategorias ? ' main-content--with-categorias' : ''}`} style={isMobile && showCategorias ? { marginTop: 0 } : {}}>
         <nav className="breadcrumb" aria-label="breadcrumb">
@@ -305,7 +294,6 @@ const RecetaDetalleWrapper: React.FC<{ setGlobalLoading: (v: boolean) => void }>
         onCategoriaClick={handleCategoriaClick}
         isMobile={isMobile}
         visible={showCategorias}
-        {...(isMobile ? { id: 'categorias-sidebar' } : {})}
       />
       <main className="main-content">
         <nav className="breadcrumb" aria-label="breadcrumb">
@@ -422,7 +410,7 @@ const AdminLayout: React.FC = () => {
 
 // Componente para proteger rutas admin
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { session, loading } = useAuth();
+  const { session } = useAuth();
   if (!session) return <Navigate to="/login" replace />;
   return <>{children}</>;
 };
