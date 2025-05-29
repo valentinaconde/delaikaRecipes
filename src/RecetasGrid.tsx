@@ -29,7 +29,7 @@ const RecetasGrid: React.FC<RecetasGridProps> = ({ recetas }) => {
           style={{ cursor: 'pointer' }}
         >
           <img src={(receta.imagen ?? (receta as any).image) || '/logo.png'} alt={receta.titulo} className="receta-img" />
-          <div className="receta-titulo">{receta.titulo}</div>
+          <div className="receta-titulo">{receta.titulo.charAt(0).toUpperCase() + receta.titulo.slice(1)}</div>
         </div>
       ))}
     </div>
