@@ -559,6 +559,7 @@ html {
   padding: 0;
   margin: 0;
 }
+
  .abml-recetas-item{
   border-bottom: 1px solid var(--color-sage);
   width: 600px;
@@ -619,6 +620,31 @@ html {
   font-family: inherit;
   font-weight: 500;
   box-shadow: none;
+}
+.abml-categorias-form {
+  padding-bottom: 30px;
+}
+.abml-categorias-input{
+      font-size: 1rem;
+    padding: 0.5rem 0.7rem;
+    border-radius: 6px;
+    border: 1.5px solid var(--color-dun);
+    background: var(--color-bone);
+    color: #222;
+}
+.abml-categorias-btn{
+      background: var(--color-ebony);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.98rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: background 0.15s;
+    flex: 0 0 auto;
+    align-self: flex-start;
 }
 .abml-categorias-item > span {
   width: 200px;

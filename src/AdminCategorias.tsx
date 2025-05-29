@@ -100,8 +100,15 @@ const AdminCategorias: React.FC = () => {
           value={newNombre}
           onChange={e => setNewNombre(e.target.value)}
           disabled={saving}
+          className="abml-categorias-input"
         />
-        <button onClick={handleAdd} disabled={saving || !newNombre.trim()}>Agregar</button>
+        <button
+          onClick={handleAdd}
+          disabled={saving || !newNombre.trim()}
+          className="abml-categorias-btn"
+        >
+          Agregar
+        </button>
       </div>
       {loading && <div>Cargando...</div>}
       {error && <div style={{color: 'red'}}>{error}</div>}
