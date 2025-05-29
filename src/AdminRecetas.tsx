@@ -158,7 +158,7 @@ const AdminRecetas: React.FC = () => {
           {categorias.map(cat => <option key={cat.id} value={cat.nombre}>{cat.nombre}</option>)}
         </select>
         <textarea name="ingredientes" placeholder="Ingredientes (separados por coma)" value={form.ingredientes} onChange={handleChange} disabled={loading} />
-        <textarea name="pasos" placeholder="Pasos (uno por línea)" value={form.pasos} onChange={handleChange} disabled={loading} />
+        <textarea name="pasos" placeholder="Pasos (uno por línea; puedes intercalar comentarios usando tip, tips, aclaracion o comentario)" value={form.pasos} onChange={handleChange} disabled={loading} />
         {editId === null ? (
           <button onClick={handleAdd} disabled={loading}>Agregar</button>
         ) : (
