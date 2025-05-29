@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from './supabaseClient';
+import type { User } from '@supabase/supabase-js';
 
 export type UserSession = {
   user: {
@@ -19,8 +20,12 @@ export const useSupabaseAuth = () => {
     const currentSession = supabase.auth.getSession();
     currentSession.then(({ data }) => {
       if (data.session) {
-        setSession({
-          user: data.session.user,
+        const user = data.session.user as User;
+        setSession({          user: {
+            ...user,
+            email: user.email ?? null,
+            avatar_url: (user.user_metadata && user.user_metadata.avatar_url) || null,
+          },
           accessToken: data.session.access_token,
         });
       } else {
@@ -30,8 +35,12 @@ export const useSupabaseAuth = () => {
     });
     const { data: listener } = supabase.auth.onAuthStateChange((_event, newSession) => {
       if (newSession) {
-        setSession({
-          user: newSession.user,
+        const user = newSession.user as User;
+        setSession({          user: {
+            ...user,
+            email: user.email ?? null,
+            avatar_url: (user.user_metadata && user.user_metadata.avatar_url) || null,
+          },
           accessToken: newSession.access_token,
         });
       } else {

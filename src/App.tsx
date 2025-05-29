@@ -4,7 +4,7 @@
 
 import './App.css'
 import { useState, useEffect, createContext, useContext } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, Link, useSearchParams, useParams, Outlet } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, Link, useParams, Outlet } from 'react-router-dom'
 import CategoriasSidebar from './CategoriasSidebar'
 import RecetasGrid from './RecetasGrid'
 import RecetaDetalle from './RecetaDetalle'
@@ -120,7 +120,6 @@ const LoginView: React.FC = () => {
 const MainView = () => {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<{ id: number; nombre: string } | null>(null);
   const [showCategorias, setShowCategorias] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [categorias, setCategorias] = useState<{ id: number; nombre: string }[]>([]);
@@ -157,43 +156,19 @@ const MainView = () => {
 
   const handleCategoriaClick = (cat: { id: number; nombre: string } | null) => {
     setCategoriaSeleccionada(cat);
-    if (isMobile) setShowCategorias(false);
-  };
-  const handleToggleCategorias = () => setShowCategorias(v => !v);
-  const handleToggleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key === 'Enter' || e.key === ' ') handleToggleCategorias();
+    if (showCategorias) setShowCategorias(false);
   };
 
   return (
     <div className="layout">
-      {isMobile && (
-        <button
-          className="categorias-toggle-btn"
-          aria-label="Mostrar/ocultar categorías"
-          aria-expanded={showCategorias}
-          aria-controls="categorias-sidebar"
-          tabIndex={0}
-          onClick={handleToggleCategorias}
-          onKeyDown={handleToggleKeyDown}
-          style={{ justifyContent: 'space-between' }}
-        >
-          <span>Categorías</span>
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" style={{ marginLeft: 'auto' }}>
-            <rect x="4" y="7" width="16" height="2" rx="1" fill="#414833" />
-            <rect x="4" y="11" width="16" height="2" rx="1" fill="#414833" />
-            <rect x="4" y="15" width="16" height="2" rx="1" fill="#414833" />
-          </svg>
-        </button>
-      )}
       <CategoriasSidebar
         categorias={categorias}
         categoriaSeleccionada={categoriaSeleccionada}
         onCategoriaClick={handleCategoriaClick}
-        isMobile={isMobile}
         visible={showCategorias}
-        {...(isMobile ? { id: 'categorias-sidebar' } : {})}
+        {...(showCategorias ? { id: 'categorias-sidebar' } : {})}
       />
-      <main className={`main-content${isMobile ? (showCategorias ? ' main-content--with-categorias' : ' main-content--without-categorias') : ''}`}>
+      <main className={`main-content${showCategorias ? ' main-content--with-categorias' : ' main-content--without-categorias'}`}>
         <nav className="breadcrumb" aria-label="breadcrumb">
           <a
             href="/"
