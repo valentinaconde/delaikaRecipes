@@ -236,7 +236,7 @@ const RecetaDetalleWrapper: React.FC<{ setGlobalLoading: (v: boolean) => void }>
   const [error, setError] = useState<string | null>(null);
   const [categorias, setCategorias] = useState<{ id: number; nombre: string }[]>([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<{ id: number; nombre: string } | null>(null);
-  const [showCategorias, setShowCategorias] = useState(true);
+  const [showCategorias, setShowCategorias] = useState(false); // Comienza cerrado en detalle de receta
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -288,6 +288,33 @@ const RecetaDetalleWrapper: React.FC<{ setGlobalLoading: (v: boolean) => void }>
 
   return (
     <div className="layout">
+      {isMobile && (
+        <button
+          className="categorias-toggle-btn"
+          aria-label="Mostrar/ocultar categorías"
+          aria-expanded={showCategorias}
+          aria-controls="categorias-sidebar"
+          tabIndex={0}
+          onClick={() => setShowCategorias(v => !v)}
+          style={{ justifyContent: 'space-between', width: '100%', display: 'flex', alignItems: 'center', background: 'var(--color-sage)', border: 'none', borderRadius: 0, fontWeight: 600, fontSize: '1.1rem', padding: '1rem 1.2rem', margin: 0, cursor: 'pointer' }}
+        >
+          <span style={{ fontWeight: 600 }}>CATEGORÍAS</span>
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            focusable="false"
+            style={{ marginLeft: 'auto' }}
+          >
+            <rect x="4" y="7" width="16" height="2" rx="1" fill="#414833" />
+            <rect x="4" y="11" width="16" height="2" rx="1" fill="#414833" />
+            <rect x="4" y="15" width="16" height="2" rx="1" fill="#414833" />
+          </svg>
+        </button>
+      )}
       <CategoriasSidebar
         categorias={categorias}
         categoriaSeleccionada={categoriaSeleccionada}
