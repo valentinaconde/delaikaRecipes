@@ -43,10 +43,10 @@ const CategoriasSidebar: React.FC<CategoriasSidebarProps> = ({ categorias, categ
             className={`category-item${categoriaSeleccionada?.id === cat.id ? ' selected' : ''}`}
             onClick={() => handleClick(cat)}
             tabIndex={0}
-            aria-label={cat.nombre}
+            aria-label={cat.nombre.charAt(0).toUpperCase() + cat.nombre.slice(1)}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleClick(cat); }}
           >
-            {cat.nombre}
+            {cat.nombre.charAt(0).toUpperCase() + cat.nombre.slice(1)}
           </li>
         ))}
       </ul>
