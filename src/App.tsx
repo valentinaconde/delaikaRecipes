@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, Link, us
 import CategoriasSidebar from './CategoriasSidebar'
 import RecetasGrid from './RecetasGrid'
 import RecetaDetalle from './RecetaDetalle'
-import AdminCategorias, { CategoriasContext } from './AdminCategorias'
+import AdminCategorias from './AdminCategorias'
 import AdminRecetas from './AdminRecetas'
 import { useSupabaseAuth } from './hooksSupabaseAuth'
 
@@ -431,35 +431,33 @@ const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 };
 
 const App = () => {
-  const [categorias, setCategorias] = useState(categories);
+  const [categorias] = useState(categories);
   const [recetas, setRecetas] = useState(recetasIniciales);
   return (
     <SupabaseAuthProvider>
-      <CategoriasContext.Provider value={{ categorias, setCategorias }}>
-        <RecetasContext.Provider value={{ recetas, setRecetas }}>
-          <Router>
-            <Navbar />
-            <Routes>
-              <Route path="/" element={<MainView categorias={categorias} />} />
-              <Route path="/receta/:id" element={<RecetaDetalleWrapper categorias={categorias} />} />
-              <Route path="/login" element={<LoginView />} />
-              <Route
-                path="/admin/*"
-                element={
-                  <RequireAuth>
-                    <AdminLayout />
-                  </RequireAuth>
-                }
-              >
-                <Route path="categorias" element={<AdminCategorias />} />
-                <Route path="recetas" element={<AdminRecetas />} />
-                <Route index element={<div />} />
-              </Route>
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Router>
-        </RecetasContext.Provider>
-      </CategoriasContext.Provider>
+      <RecetasContext.Provider value={{ recetas, setRecetas }}>
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<MainView categorias={categorias} />} />
+            <Route path="/receta/:id" element={<RecetaDetalleWrapper categorias={categorias} />} />
+            <Route path="/login" element={<LoginView />} />
+            <Route
+              path="/admin/*"
+              element={
+                <RequireAuth>
+                  <AdminLayout />
+                </RequireAuth>
+              }
+            >
+              <Route path="categorias" element={<AdminCategorias />} />
+              <Route path="recetas" element={<AdminRecetas />} />
+              <Route index element={<div />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Router>
+      </RecetasContext.Provider>
     </SupabaseAuthProvider>
   )
 }

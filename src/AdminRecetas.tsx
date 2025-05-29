@@ -1,6 +1,6 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { RecetasContext } from './App';
-import { CategoriasContext } from './AdminCategorias';
+import { supabase } from './supabaseClient';
 
 const initialForm = {
   titulo: '',
@@ -12,9 +12,17 @@ const initialForm = {
 
 const AdminRecetas: React.FC = () => {
   const { recetas, setRecetas } = useContext(RecetasContext);
-  const { categorias } = useContext(CategoriasContext);
+  const [categorias, setCategorias] = useState<string[]>([]);
   const [form, setForm] = useState(initialForm);
   const [editIndex, setEditIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchCategorias = async () => {
+      const { data, error } = await supabase.from('categorias').select('nombre').order('nombre', { ascending: true });
+      if (data) setCategorias(data.map((c: { nombre: string }) => c.nombre));
+    };
+    fetchCategorias();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });

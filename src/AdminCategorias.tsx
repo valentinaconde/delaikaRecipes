@@ -1,45 +1,93 @@
-import { createContext, useContext, useState } from 'react';
-import { RecetasContext } from './App';
+import { useEffect, useState } from 'react';
+import { supabase } from './supabaseClient';
 
-export const CategoriasContext = createContext<{
-  categorias: string[];
-  setCategorias: React.Dispatch<React.SetStateAction<string[]>>;
-}>({
-  categorias: [],
-  setCategorias: () => {},
-});
+// Tipo para la categoría según la tabla de Supabase
+export type Categoria = {
+  id: number;
+  nombre: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+};
+
+type EditState = {
+  id: number;
+  nombre: string;
+} | null;
 
 const AdminCategorias: React.FC = () => {
-  const { categorias, setCategorias } = useContext(CategoriasContext);
-  const { recetas, setRecetas } = useContext(RecetasContext);
-  const [nuevaCategoria, setNuevaCategoria] = useState('');
-  const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [editValue, setEditValue] = useState('');
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [newNombre, setNewNombre] = useState('');
+  const [edit, setEdit] = useState<EditState>(null);
+  const [saving, setSaving] = useState(false);
+  const [success, setSuccess] = useState('');
 
-  const handleAdd = () => {
-    if (!nuevaCategoria.trim() || categorias.includes(nuevaCategoria.trim())) return;
-    setCategorias(prev => [...prev, nuevaCategoria.trim()]);
-    setNuevaCategoria('');
+  const fetchCategorias = async () => {
+    setLoading(true);
+    setError(null);
+    const { data, error } = await supabase
+      .from('categorias')
+      .select('*')
+      .order('nombre', { ascending: true });
+    if (error) setError(error.message);
+    else setCategorias(data || []);
+    setLoading(false);
   };
 
-  const handleDelete = (idx: number) => {
-    const catToDelete = categorias[idx];
-    setCategorias(prev => prev.filter((_, i) => i !== idx));
-    setRecetas(prev => prev.map(r => r.categoria === catToDelete ? { ...r, categoria: '' } : r));
+  useEffect(() => {
+    fetchCategorias();
+  }, []);
+
+  const handleAdd = async () => {
+    if (!newNombre.trim()) return;
+    setSaving(true);
+    setError(null);
+    setSuccess('');
+    const { error } = await supabase.from('categorias').insert({ nombre: newNombre.trim() });
+    if (error) setError(error.message);
+    else {
+      setSuccess('Categoría agregada');
+      setNewNombre('');
+      fetchCategorias();
+    }
+    setSaving(false);
   };
 
-  const handleEdit = (idx: number) => {
-    setEditIndex(idx);
-    setEditValue(categorias[idx]);
+  const handleEdit = (cat: Categoria) => setEdit({ id: cat.id, nombre: cat.nombre });
+
+  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (edit) setEdit({ ...edit, nombre: e.target.value });
   };
 
-  const handleEditSave = () => {
-    if (!editValue.trim() || categorias.includes(editValue.trim())) return;
-    const oldCat = categorias[editIndex!];
-    setCategorias(prev => prev.map((cat, i) => (i === editIndex ? editValue.trim() : cat)));
-    setRecetas(prev => prev.map(r => r.categoria === oldCat ? { ...r, categoria: editValue.trim() } : r));
-    setEditIndex(null);
-    setEditValue('');
+  const handleEditSave = async () => {
+    if (!edit || !edit.nombre.trim()) return;
+    setSaving(true);
+    setError(null);
+    setSuccess('');
+    const { error } = await supabase.from('categorias').update({ nombre: edit.nombre.trim() }).eq('id', edit.id);
+    if (error) setError(error.message);
+    else {
+      setSuccess('Categoría actualizada');
+      setEdit(null);
+      fetchCategorias();
+    }
+    setSaving(false);
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!window.confirm('¿Eliminar esta categoría?')) return;
+    setSaving(true);
+    setError(null);
+    setSuccess('');
+    const { error } = await supabase.from('categorias').delete().eq('id', id);
+    if (error) setError(error.message);
+    else {
+      setSuccess('Categoría eliminada');
+      fetchCategorias();
+    }
+    setSaving(false);
   };
 
   return (
@@ -48,33 +96,36 @@ const AdminCategorias: React.FC = () => {
       <div className="abml-categorias-form">
         <input
           type="text"
-          className='agregar-categoria-input'
           placeholder="Nueva categoría"
-          value={nuevaCategoria}
-          onChange={e => setNuevaCategoria(e.target.value)}
+          value={newNombre}
+          onChange={e => setNewNombre(e.target.value)}
+          disabled={saving}
         />
-        <button onClick={handleAdd} className="agregar-categoria-btn">Agregar</button>
+        <button onClick={handleAdd} disabled={saving || !newNombre.trim()}>Agregar</button>
       </div>
+      {loading && <div>Cargando...</div>}
+      {error && <div style={{color: 'red'}}>{error}</div>}
+      {success && <div style={{color: 'green'}}>{success}</div>}
       <ul className="abml-categorias-list">
-        {categorias.map((cat, idx) => (
-          <li key={cat} className="abml-categorias-item">
-            {editIndex === idx ? (
+        {categorias.map(cat => (
+          <li key={cat.id} className="abml-categorias-item">
+            {edit && edit.id === cat.id ? (
               <>
                 <input
                   type="text"
-                  value={editValue}
-                  onChange={e => setEditValue(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Enter') handleEditSave(); }}
-                  autoFocus
+                  value={edit.nombre}
+                  onChange={handleEditChange}
+                  disabled={saving}
+                  aria-label="Editar nombre de categoría"
                 />
-                <button onClick={handleEditSave} >Guardar</button>
-                <button onClick={() => { setEditIndex(null); setEditValue(''); }}>Cancelar</button>
+                <button onClick={handleEditSave} disabled={saving || !edit.nombre.trim()}>Guardar</button>
+                <button onClick={() => setEdit(null)} disabled={saving}>Cancelar</button>
               </>
             ) : (
               <>
-                <span>{cat}</span>
-                <button onClick={() => handleEdit(idx)}>Editar</button>
-                <button onClick={() => handleDelete(idx)}>Eliminar</button>
+                <span>{cat.nombre}</span>
+                <button onClick={() => handleEdit(cat)} disabled={saving}>Editar</button>
+                <button onClick={() => handleDelete(cat.id)} disabled={saving}>Eliminar</button>
               </>
             )}
           </li>
