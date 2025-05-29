@@ -117,7 +117,7 @@ const LoginView: React.FC = () => {
   );
 };
 
-const MainView = () => {
+const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void }) => {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<{ id: number; nombre: string } | null>(null);
   const [showCategorias, setShowCategorias] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -128,11 +128,13 @@ const MainView = () => {
   // Fetch categorías al montar
   useEffect(() => {
     const fetchCategorias = async () => {
+      setGlobalLoading(true);
       setLoading(true);
       const { data, error } = await supabase.from('categorias').select('id, nombre').order('nombre');
       if (error) setError(error.message);
       else setCategorias(data || []);
       setLoading(false);
+      setGlobalLoading(false);
     };
     fetchCategorias();
   }, []);
@@ -140,6 +142,7 @@ const MainView = () => {
   // Fetch recetas según categoría seleccionada
   useEffect(() => {
     const fetchRecetas = async () => {
+      setGlobalLoading(true);
       setLoading(true);
       setError(null);
       let query = supabase.from('recetas').select('*');
@@ -150,6 +153,7 @@ const MainView = () => {
       if (error) setError(error.message);
       else setRecetas(data || []);
       setLoading(false);
+      setGlobalLoading(false);
     };
     fetchRecetas();
   }, [categoriaSeleccionada]);
@@ -195,7 +199,7 @@ const MainView = () => {
   );
 };
 
-const RecetaDetalleWrapper: React.FC = () => {
+const RecetaDetalleWrapper: React.FC<{ setGlobalLoading: (v: boolean) => void }> = ({ setGlobalLoading }) => {
   const { id } = useParams();
   const [receta, setReceta] = useState<any | null>(null);
   const [ingredientes, setIngredientes] = useState<string[]>([]);
@@ -216,14 +220,17 @@ const RecetaDetalleWrapper: React.FC = () => {
 
   useEffect(() => {
     const fetchCategorias = async () => {
+      setGlobalLoading(true);
       const { data } = await supabase.from('categorias').select('id, nombre').order('nombre');
       setCategorias(data || []);
+      setGlobalLoading(false);
     };
     fetchCategorias();
   }, []);
 
   useEffect(() => {
     const fetchReceta = async () => {
+      setGlobalLoading(true);
       setLoading(true);
       setError(null);
       // Traer receta
@@ -231,6 +238,7 @@ const RecetaDetalleWrapper: React.FC = () => {
       if (error || !data) {
         setError(error?.message || 'No encontrada');
         setLoading(false);
+        setGlobalLoading(false);
         return;
       }
       setReceta(data);
@@ -240,6 +248,7 @@ const RecetaDetalleWrapper: React.FC = () => {
       // Pasos
       setPasos(data.pasos ? data.pasos.split('\n').map((p: string) => p.trim()).filter(Boolean) : []);
       setLoading(false);
+      setGlobalLoading(false);
     };
     if (id) fetchReceta();
   }, [id]);
@@ -350,14 +359,38 @@ const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   );
 };
 
+// Spinner global
+const GlobalSpinner: React.FC<{ visible: boolean }> = ({ visible }) => (
+  visible ? (
+    <div className="global-spinner-overlay">
+      <div className="global-spinner" aria-label="Cargando" />
+    </div>
+  ) : null
+);
+
 const App = () => {
+  const [globalLoading, setGlobalLoading] = useState(false);
+
+  // Interceptar navegación para mostrar spinner
+  useEffect(() => {
+    const handleStart = () => setGlobalLoading(true);
+    const handleEnd = () => setGlobalLoading(false);
+    window.addEventListener('delaika-loading-start', handleStart);
+    window.addEventListener('delaika-loading-end', handleEnd);
+    return () => {
+      window.removeEventListener('delaika-loading-start', handleStart);
+      window.removeEventListener('delaika-loading-end', handleEnd);
+    };
+  }, []);
+
   return (
     <SupabaseAuthProvider>
+      <GlobalSpinner visible={globalLoading} />
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" element={<MainView />} />
-          <Route path="/receta/:id" element={<RecetaDetalleWrapper />} />
+          <Route path="/" element={<MainView setGlobalLoading={setGlobalLoading} />} />
+          <Route path="/receta/:id" element={<RecetaDetalleWrapper setGlobalLoading={setGlobalLoading} />} />
           <Route path="/login" element={<LoginView />} />
           <Route
             path="/admin/*"
