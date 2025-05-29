@@ -28,7 +28,7 @@ const RecetasGrid: React.FC<RecetasGridProps> = ({ recetas }) => {
           onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleCardClick(receta.id); }}
           style={{ cursor: 'pointer' }}
         >
-          <img src={receta.imagen} alt={receta.titulo} className="receta-img" />
+          <img src={(receta.imagen ?? (receta as any).image) || '/logo.png'} alt={receta.titulo} className="receta-img" />
           <div className="receta-titulo">{receta.titulo}</div>
         </div>
       ))}
