@@ -174,7 +174,12 @@ const AdminRecetas: React.FC = () => {
       <ul className="abml-recetas-list">
         {recetas.map((receta) => (
           <li key={receta.id} className="abml-recetas-item">
-            <span><b>{receta.titulo}</b> ({receta.categoria || 'Sin categoría'})</span>
+            <span>
+            <b>{receta.titulo}</b>
+            <span style={{ marginLeft: 8 }}>
+              ({receta.categoria || 'Sin categoría'})
+            </span>
+          </span>
             <div>
               <button onClick={() => handleEdit(receta)} disabled={loading}>Editar</button>
               <button onClick={() => handleDelete(receta.id)} disabled={loading}>Eliminar</button>
