@@ -1,11 +1,16 @@
+// Variables de entorno necesarias para Supabase:
+// VITE_SUPABASE_URL=<tu-url-de-supabase>
+// VITE_SUPABASE_ANON_KEY=<tu-anon-key-de-supabase>
+
 import './App.css'
 import { useState, useEffect, createContext, useContext } from 'react'
-import { BrowserRouter as Router, Routes, Route, useParams, Navigate, useSearchParams, useNavigate, Link, Outlet } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, Link, useSearchParams, useParams, Outlet } from 'react-router-dom'
 import CategoriasSidebar from './CategoriasSidebar'
 import RecetasGrid from './RecetasGrid'
 import RecetaDetalle from './RecetaDetalle'
 import AdminCategorias, { CategoriasContext } from './AdminCategorias'
 import AdminRecetas from './AdminRecetas'
+import { useSupabaseAuth } from './hooksSupabaseAuth'
 
 export const RecetasContext = createContext<{
   recetas: any[];
@@ -24,6 +29,7 @@ const categories = [
   'Pastas'
 ];
 
+// Definición única y correcta de recetasIniciales
 const recetasIniciales = [
   {
     id: 1,
@@ -72,18 +78,26 @@ const recetasIniciales = [
     categoria: 'Carnes',
     ingredientes: ['Huevos', 'Sal', 'Pimienta', 'Queso'],
     pasos: ['Batir los huevos.', 'Cocinar en sartén.', 'Agregar queso.', 'Doblar y servir.'],
-  },
+  }
 ];
-
-// Contexto global para loading
-const LoadingContext = createContext<{loading: boolean, setLoading: (v: boolean) => void}>({loading: false, setLoading: () => {}});
 // Contexto global para auth
-const AuthContext = createContext<{logged: boolean, setLogged: (v: boolean) => void}>({logged: false, setLogged: () => {}});
+const SupabaseAuthContext = createContext<{
+  session: any;
+  loading: boolean;
+  signInWithGoogle: () => void;
+  signOut: () => void;
+} | null>(null);
+
+export const useAuth = () => {
+  const ctx = useContext(SupabaseAuthContext);
+  if (!ctx) throw new Error('useAuth must be used within SupabaseAuthProvider');
+  return ctx;
+};
 
 const LoginIcon: React.FC = () => {
-  const { logged } = useContext(AuthContext);
+  const { session } = useAuth();
   const navigate = useNavigate();
-  if (logged) return null;
+  if (session) return null;
   return (
     <button className="login-icon-btn" aria-label="Iniciar sesión" onClick={() => navigate('/login')}>
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"/><path d="M21 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/></svg>
@@ -92,10 +106,10 @@ const LoginIcon: React.FC = () => {
 };
 
 const LogoutIcon: React.FC = () => {
-  const { setLogged } = useContext(AuthContext);
+  const { signOut } = useAuth();
   const navigate = useNavigate();
   const handleLogout = () => {
-    setLogged(false);
+    signOut();
     navigate('/', { replace: true });
   };
   return (
@@ -115,147 +129,49 @@ const AdminIcon: React.FC = () => {
 };
 
 const Navbar: React.FC = () => {
-  const { logged } = useContext(AuthContext);
+  const { session } = useAuth();
   return (
     <nav className="navbar" aria-label="Barra de navegación principal">
       <Link to="/" className="navbar-logo-link" tabIndex={0} aria-label="Ir a inicio">
         <img src="/logo.png" alt="delaika logo" className="navbar-logo" height={32} />
       </Link>
       <span className="navbar-spacer" />
-      {logged && <AdminIcon />}
-      {logged ? <LogoutIcon /> : <LoginIcon />}
+      {session && <AdminIcon />}
+      {session ? <LogoutIcon /> : <LoginIcon />}
     </nav>
   );
 };
 
 const LoginView: React.FC = () => {
-  const { setLogged } = useContext(AuthContext);
-  const { setLoading } = useContext(LoadingContext);
+  const { signInWithGoogle, session, loading } = useAuth();
   const navigate = useNavigate();
-  const [user, setUser] = useState('');
-  const [pass, setPass] = useState('');
   const [error, setError] = useState('');
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+
+  useEffect(() => {
+    if (session) navigate('/admin', { replace: true });
+  }, [session, navigate]);
+
+  const handleLogin = async () => {
     setError('');
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      if (user === 'admin' && pass === 'admin') {
-        setLogged(true);
-        navigate('/admin', { replace: true });
-      } else {
-        setError('Usuario o contraseña incorrectos');
-      }
-    }, 700);
+    try {
+      await signInWithGoogle();
+    } catch (e: any) {
+      setError(e.message || 'Error al iniciar sesión');
+    }
   };
+
   return (
     <div className="login-container">
-      <form className="login-form" onSubmit={handleSubmit}>
-        <h2>Iniciar sesión</h2>
-        <input type="text" placeholder="Usuario" value={user} onChange={e => setUser(e.target.value)} />
-        <input type="password" placeholder="Contraseña" value={pass} onChange={e => setPass(e.target.value)} />
-        <button type="submit">Entrar</button>
-        {error && <div className="login-error">{error}</div>}
-      </form>
-    </div>
-  );
-};
-
-const AdminSidebar: React.FC = () => {
-  const [showMenu, setShowMenu] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (isMobile) setShowMenu(false);
-    else setShowMenu(true);
-  }, [isMobile]);
-
-  const handleToggleMenu = () => setShowMenu(v => !v);
-  const handleToggleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key === 'Enter' || e.key === ' ') handleToggleMenu();
-  };
-
-  return (
-    <>
-      {isMobile && (
-        <button
-          className="categorias-toggle-btn"
-          aria-label="Mostrar/ocultar menú admin"
-          aria-expanded={showMenu}
-          aria-controls="admin-sidebar-menu"
-          tabIndex={0}
-          onClick={handleToggleMenu}
-          onKeyDown={handleToggleKeyDown}
-          style={{ justifyContent: 'space-between' }}
-        >
-          <span>Menú</span>
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-            focusable="false"
-            style={{ marginLeft: 'auto' }}
-          >
-            <rect x="4" y="7" width="16" height="2" rx="1" fill="#414833" />
-            <rect x="4" y="11" width="16" height="2" rx="1" fill="#414833" />
-            <rect x="4" y="15" width="16" height="2" rx="1" fill="#414833" />
-          </svg>
-        </button>
-      )}
-      <aside
-        className={`admin-sidebar${isMobile ? (showMenu ? ' sidebar--visible' : ' sidebar--hidden') : ''}`}
-        id={isMobile ? 'admin-sidebar-menu' : undefined}
-        aria-label="Menú admin"
-        aria-hidden={isMobile && !showMenu}
+      <h2>Iniciar sesión</h2>
+      <button
+        className="google-login-btn"
+        onClick={handleLogin}
+        disabled={loading}
+        aria-label="Iniciar sesión con Google"
       >
-        <ul>
-          <li><Link to="/admin/categorias" className="admin-sidebar-link">categorias</Link></li>
-          <li><Link to="/admin/recetas" className="admin-sidebar-link">recetas</Link></li>
-        </ul>
-      </aside>
-    </>
-  );
-};
-
-const AdminLayout: React.FC = () => (
-  <div className="admin-layout">
- 
-    <div className="admin-content">
-      <AdminSidebar />
-      <main className="admin-main">
-        <Outlet />
-        {/* Imagen de fondo en la pantalla principal del área de admin */}
-        <Routes>
-          <Route index element={
-            <div className="admin-bg-image-wrapper">
-              <img src="/admin.png" alt="admin area" className="admin-bg-image" />
-            </div>
-          } />
-        </Routes>
-      </main>
-    </div>
-  </div>
-);
-
-const GlobalLoading: React.FC = () => {
-  const { loading } = useContext(LoadingContext);
-  if (!loading) return null;
-  return (
-    <div className="global-loading-overlay">
-      <div className="global-spinner" aria-label="Cargando" />
+        {loading ? 'Cargando...' : 'Iniciar sesión con Google'}
+      </button>
+      {error && <div className="login-error">{error}</div>}
     </div>
   );
 };
@@ -264,7 +180,6 @@ const MainView = ({ categorias }: { categorias: string[] }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoriaParam = searchParams.get('categoria');
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string | null>(categoriaParam || null);
-  const { setLoading } = useContext(LoadingContext);
   const [showCategorias, setShowCategorias] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -284,13 +199,7 @@ const MainView = ({ categorias }: { categorias: string[] }) => {
 
   useEffect(() => {
     setCategoriaSeleccionada(categoriaParam || null);
-    if (categoriaParam !== null) {
-      setLoading(true);
-      const timeout = setTimeout(() => setLoading(false), 600);
-      return () => clearTimeout(timeout);
-    }
-    setLoading(false);
-  }, [categoriaParam, setLoading]);
+  }, [categoriaParam]);
 
   const { recetas } = useContext(RecetasContext);
   const recetasFiltradas = categoriaSeleccionada
@@ -298,7 +207,6 @@ const MainView = ({ categorias }: { categorias: string[] }) => {
     : recetas;
   const handleCategoriaClick = (cat: string | null) => {
     setCategoriaSeleccionada(cat);
-    setLoading(true);
     setSearchParams(cat ? { categoria: cat } : {});
     if (isMobile) setShowCategorias(false);
   };
@@ -482,35 +390,77 @@ const RecetaDetalleWrapper = ({ categorias }: { categorias: string[] }) => {
   );
 };
 
+// Layout para el área de admin con sidebar e imagen de fondo
+const AdminLayout: React.FC = () => (
+  <div className="admin-layout">
+    <aside className="admin-sidebar">
+      <ul>
+        <li><Link to="/admin/categorias">Categorías</Link></li>
+        <li><Link to="/admin/recetas">Recetas</Link></li>
+      </ul>
+    </aside>
+    <main className="admin-main">
+      <Outlet />
+      <Routes>
+        <Route index element={
+          <div className="admin-bg-image-wrapper">
+            <img src="/admin.png" alt="admin area" className="admin-bg-image" />
+          </div>
+        } />
+      </Routes>
+    </main>
+  </div>
+);
+
+// Componente para proteger rutas admin
+const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { session, loading } = useAuth();
+  if (loading) return <div>Cargando...</div>;
+  if (!session) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+};
+
+// Declarar el provider SupabaseAuthProvider en App.tsx
+const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const auth = useSupabaseAuth();
+  return (
+    <SupabaseAuthContext.Provider value={auth}>
+      {children}
+    </SupabaseAuthContext.Provider>
+  );
+};
+
 const App = () => {
-  const [loading, setLoading] = useState(false);
-  const [logged, setLogged] = useState(false);
   const [categorias, setCategorias] = useState(categories);
   const [recetas, setRecetas] = useState(recetasIniciales);
   return (
-    <AuthContext.Provider value={{ logged, setLogged }}>
-      <LoadingContext.Provider value={{ loading, setLoading }}>
-        <CategoriasContext.Provider value={{ categorias, setCategorias }}>
-          <RecetasContext.Provider value={{ recetas, setRecetas }}>
-            <Router>
-              <GlobalLoading />
-              <Navbar />
-              <Routes>
-                <Route path="/" element={<MainView categorias={categorias} />} />
-                <Route path="/receta/:id" element={<RecetaDetalleWrapper categorias={categorias} />} />
-                <Route path="/login" element={<LoginView />} />
-                <Route path="/admin" element={logged ? <AdminLayout /> : <Navigate to="/login" replace />}>
-                  <Route path="categorias" element={<AdminCategorias />} />
-                  <Route path="recetas" element={<AdminRecetas />} />
-                  <Route index element={<div />} />
-                </Route>
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </Router>
-          </RecetasContext.Provider>
-        </CategoriasContext.Provider>
-      </LoadingContext.Provider>
-    </AuthContext.Provider>
+    <SupabaseAuthProvider>
+      <CategoriasContext.Provider value={{ categorias, setCategorias }}>
+        <RecetasContext.Provider value={{ recetas, setRecetas }}>
+          <Router>
+            <Navbar />
+            <Routes>
+              <Route path="/" element={<MainView categorias={categorias} />} />
+              <Route path="/receta/:id" element={<RecetaDetalleWrapper categorias={categorias} />} />
+              <Route path="/login" element={<LoginView />} />
+              <Route
+                path="/admin/*"
+                element={
+                  <RequireAuth>
+                    <AdminLayout />
+                  </RequireAuth>
+                }
+              >
+                <Route path="categorias" element={<AdminCategorias />} />
+                <Route path="recetas" element={<AdminRecetas />} />
+                <Route index element={<div />} />
+              </Route>
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Router>
+        </RecetasContext.Provider>
+      </CategoriasContext.Provider>
+    </SupabaseAuthProvider>
   )
 }
 
