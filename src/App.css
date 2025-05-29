@@ -1017,3 +1017,12 @@ html {
   z-index: 1;
   background: transparent;
 }
+
+.abml-recetas-form textarea[name="ingredientes"] {
+  min-height: 2.5em;
+  resize: vertical;
+}
+.abml-recetas-form textarea[name="pasos"] {
+  min-height: 7.5em;
+  resize: vertical;
+}
