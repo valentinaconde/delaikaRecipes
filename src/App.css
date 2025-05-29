@@ -311,8 +311,16 @@ html {
 .detalle-pasos {
   margin-top: 1.5rem;
 }
-.detalle-pasos li{
+.detalle-pasos li {
   text-align: left;
+  padding-left: 0.2em;
+}
+.detalle-paso-comentario {
+  list-style: none;
+  font-style: italic;
+  color: #7c6f57;
+  margin: 8px 0;
+  padding-left: 2em;
 }
 .detalle-pasos-titulo {
   font-size: 1.1rem;

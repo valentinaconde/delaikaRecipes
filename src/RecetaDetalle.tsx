@@ -28,18 +28,22 @@ const RecetaDetalle: React.FC<RecetaDetalleProps> = ({ receta }) => {
       <div className="detalle-pasos">
         <div className="detalle-pasos-titulo">PASO A PASO</div>
         <ol className="detalle-pasos-list">
-          {receta.pasos.map((paso, i) => {
-            const lower = paso.trim().toLowerCase();
-            const isComentario = /^(tip|tips|aclaracion|comentario)[:]?/i.test(lower);
-            if (isComentario) {
-              return (
-                <li key={i} className="detalle-paso-comentario" style={{listStyle: 'none', fontStyle: 'italic', color: '#7c6f57', margin: '8px 0'}}>
-                  <span role="note" aria-label="Comentario o tip">💡 {paso.replace(/^(tip|tips|aclaracion|comentario)[:]?/i, '').trim()}</span>
-                </li>
-              );
-            }
-            return <li key={i}>{paso}</li>;
-          })}
+          {(() => {
+            let pasoIndex = 0;
+            return receta.pasos.map((paso, i) => {
+              const lower = paso.trim().toLowerCase();
+              const isComentario = /^(tip|tips|aclaracion|comentario)[:]?/i.test(lower);
+              if (isComentario) {
+                return (
+                  <li key={i} className="detalle-paso-comentario" style={{listStyle: 'none', fontStyle: 'italic', color: '#7c6f57', margin: '8px 0', paddingLeft: '2em'}}>
+                    <span role="note" aria-label="Comentario o tip">💡 {paso.replace(/^(tip|tips|aclaracion|comentario)[:]?/i, '').trim()}</span>
+                  </li>
+                );
+              }
+              pasoIndex++;
+              return <li key={i} value={pasoIndex}>{paso}</li>;
+            });
+          })()}
         </ol>
       </div>
     </div>
