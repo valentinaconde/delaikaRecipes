@@ -119,11 +119,18 @@ const LoginView: React.FC = () => {
 
 const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void }) => {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<{ id: number; nombre: string } | null>(null);
-  const [showCategorias, setShowCategorias] = useState(true);
+  const [showCategorias, setShowCategorias] = useState(false); // Por defecto cerrado en mobile
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [categorias, setCategorias] = useState<{ id: number; nombre: string }[]>([]);
   const [recetas, setRecetas] = useState<any[]>([]);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Fetch categorías al montar
   useEffect(() => {
@@ -163,16 +170,49 @@ const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void
     if (showCategorias) setShowCategorias(false);
   };
 
+  const handleToggleCategorias = () => setShowCategorias(v => !v);
+
   return (
     <div className="layout">
+      {isMobile && (
+        <button
+          className="categorias-toggle-btn"
+          aria-label="Mostrar/ocultar categorías"
+          aria-expanded={showCategorias}
+          aria-controls="categorias-sidebar"
+          tabIndex={0}
+          onClick={handleToggleCategorias}
+          style={{ justifyContent: 'space-between', width: '100%', display: 'flex', alignItems: 'center', background: 'var(--color-sage)', border: 'none', borderRadius: 0, fontWeight: 600, fontSize: '1.1rem', padding: '1rem 1.2rem', margin: 0, cursor: 'pointer' }}
+        >
+          <span style={{ fontWeight: 600 }}>CATEGORÍAS</span>
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            focusable="false"
+            style={{ marginLeft: 'auto' }}
+          >
+            <rect x="4" y="7" width="16" height="2" rx="1" fill="#414833" />
+            <rect x="4" y="11" width="16" height="2" rx="1" fill="#414833" />
+            <rect x="4" y="15" width="16" height="2" rx="1" fill="#414833" />
+          </svg>
+        </button>
+      )}
       <CategoriasSidebar
         categorias={categorias}
         categoriaSeleccionada={categoriaSeleccionada}
-        onCategoriaClick={handleCategoriaClick}
-        visible={showCategorias}
-        {...(showCategorias ? { id: 'categorias-sidebar' } : {})}
+        onCategoriaClick={cat => {
+          setCategoriaSeleccionada(cat);
+          if (isMobile) setShowCategorias(false);
+        }}
+        isMobile={isMobile}
+        visible={isMobile ? showCategorias : true}
+        id="categorias-sidebar"
       />
-      <main className={`main-content${showCategorias ? ' main-content--with-categorias' : ' main-content--without-categorias'}`}>
+      <main className={`main-content${isMobile && showCategorias ? ' main-content--with-categorias' : ''}`} style={isMobile && showCategorias ? { marginTop: 0 } : {}}>
         <nav className="breadcrumb" aria-label="breadcrumb">
           <a
             href="/"
@@ -320,26 +360,67 @@ const RecetaDetalleWrapper: React.FC<{ setGlobalLoading: (v: boolean) => void }>
 };
 
 // Layout para el área de admin con sidebar e imagen de fondo
-const AdminLayout: React.FC = () => (
-  <div className="admin-layout">
-    <aside className="admin-sidebar">
-      <ul>
-        <li><Link to="/admin/categorias">Categorías</Link></li>
-        <li><Link to="/admin/recetas">Recetas</Link></li>
-      </ul>
-    </aside>
-    <main className="admin-main">
-      <Outlet />
-      <Routes>
-        <Route index element={
-          <div className="admin-bg-image-wrapper">
-            <img src="/admin.png" alt="admin area" className="admin-bg-image" />
-          </div>
-        } />
-      </Routes>
-    </main>
-  </div>
-);
+const AdminLayout: React.FC = () => {
+  const [showMenu, setShowMenu] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  return (
+    <div className="admin-layout">
+      {isMobile && (
+        <button
+          className="categorias-toggle-btn"
+          aria-label="Mostrar/ocultar menú admin"
+          aria-expanded={showMenu}
+          aria-controls="admin-sidebar"
+          tabIndex={0}
+          onClick={() => setShowMenu(v => !v)}
+          style={{ justifyContent: 'space-between', width: '100%', display: 'flex', alignItems: 'center', background: 'var(--color-sage)', border: 'none', borderRadius: 0, fontWeight: 600, fontSize: '1.1rem', padding: '1rem 1.2rem', margin: 0, cursor: 'pointer' }}
+        >
+          <span style={{ fontWeight: 600 }}>MENU</span>
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            focusable="false"
+            style={{ marginLeft: 'auto' }}
+          >
+            <rect x="4" y="7" width="16" height="2" rx="1" fill="#414833" />
+            <rect x="4" y="11" width="16" height="2" rx="1" fill="#414833" />
+            <rect x="4" y="15" width="16" height="2" rx="1" fill="#414833" />
+          </svg>
+        </button>
+      )}
+      <aside className={`admin-sidebar${isMobile ? (showMenu ? ' admin-sidebar--visible' : ' admin-sidebar--hidden') : ''}`} id="admin-sidebar">
+        <div className="sidebar-title">MENU</div>
+        <ul className="category-list">
+          <li className="category-item">
+            <Link to="/admin/categorias">Categorías</Link>
+          </li>
+          <li className="category-item">
+            <Link to="/admin/recetas">Recetas</Link>
+          </li>
+        </ul>
+      </aside>
+      <main className="admin-main">
+        <Outlet />
+        <Routes>
+          <Route index element={
+            <div className="admin-bg-image-wrapper">
+              <img src="/admin.png" alt="admin area" className="admin-bg-image" />
+            </div>
+          } />
+        </Routes>
+      </main>
+    </div>
+  );
+};
 
 // Componente para proteger rutas admin
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
