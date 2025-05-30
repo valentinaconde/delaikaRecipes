@@ -221,6 +221,7 @@ const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void
             </>
           )}
         </nav>
+        <div className="busqueda-input">
         <div style={{ maxWidth: 400, margin: '1.2rem auto 1.5rem auto', display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'flex-start' }}>
           <input
             type="text"
@@ -231,6 +232,7 @@ const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void
             style={{ width: '100%', padding: '0.6em 1em', borderRadius: 6, border: '1.5px solid var(--color-dun)', fontSize: '1rem', background: 'var(--color-bone)', color: '#222', textAlign: 'left' }}
           />
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#414833" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: -40, pointerEvents: 'none'}}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
         </div>
         {error && <div style={{color: 'red'}}>{error}</div>}
         <RecetasGrid recetas={

@@ -297,6 +297,10 @@ html {
 .detalle-ingredientes {
   /* flex: 1; */
 }
+.busqueda-input{
+  width: 250px;
+  display: flex;
+}
 .detalle-ingredientes-titulo {
   font-size: 1.1rem;
   font-weight: 600;
@@ -943,7 +947,7 @@ html {
   font-family: inherit;
   color: #222;
   margin: 1.1rem 0 0.7rem 0;
-  padding: 0 1.2rem;
+  padding: 0px 20px;
   letter-spacing: 0.04em;
   font-weight: 500;
 }
