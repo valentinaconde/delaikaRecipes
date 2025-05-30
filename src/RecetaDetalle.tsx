@@ -51,7 +51,7 @@ const RecetaDetalle: React.FC<RecetaDetalleProps> = ({ receta, recetasRelacionad
         )}
       </div>
       <div className="detalle-layout">
-        <img src={receta.imagen} alt={receta.titulo} className="detalle-foto" />
+        <img src={(receta.imagen ?? (receta as any).image) || '/logo.png'} alt={receta.titulo} className="detalle-foto" />
         <div className="detalle-ingredientes">
           <div className="detalle-ingredientes-titulo">INGREDIENTES</div>
           <ul>
