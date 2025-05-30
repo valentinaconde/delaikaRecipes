@@ -120,7 +120,7 @@ const RecetaDetalle: React.FC<RecetaDetalleProps> = ({ receta, recetasRelacionad
       {recetasRelacionadas && recetasRelacionadas.length > 0 && (
         <div className="relacionadas-section">
           <h3 className="relacionadas-titulo">Recetas relacionadas</h3>
-          <RecetasGrid recetas={recetasRelacionadas.slice(0, 5)} />
+          <RecetasGrid recetas={recetasRelacionadas.slice(0, 6)} />
         </div>
       )}
     </div>

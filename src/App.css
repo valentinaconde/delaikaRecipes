@@ -764,15 +764,15 @@ html {
     display: none;
   }
 
-  .recetas-grid {
+  /* .recetas-grid {
     flex-direction: column;
     gap: 1rem;
     padding: 10px;
     align-items: stretch;
-  }
+  } */
 
   .receta-card {
-    width: 100%;
+    width: 45%;
     min-width: 0;
     max-width: none;
     margin-bottom: 1rem;
