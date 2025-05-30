@@ -221,7 +221,7 @@ const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void
           )}
         </nav>
         {error && <div style={{color: 'red'}}>{error}</div>}
-        <RecetasGrid recetas={recetas} />
+        <RecetasGrid recetas={[...recetas].sort((a, b) => a.titulo.localeCompare(b.titulo, 'es', { sensitivity: 'base' }))} />
       </main>
     </div>
   );
