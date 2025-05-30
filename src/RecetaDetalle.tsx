@@ -98,13 +98,11 @@ const RecetaDetalle: React.FC<RecetaDetalleProps> = ({ receta, recetasRelacionad
               if (lower.startsWith('titulo')) {
                 pasoIndex = 0;
                 const tituloText = paso.replace(/^titulo[:]?\s*/i, '').trim();
-                return (
-                  <li key={i} className="detalle-paso-titulo-section" style={{
+                return (                  <li key={i} className="detalle-paso-titulo-section" style={{
                     listStyle: 'none', 
                     fontWeight: 'bold', 
                     margin: '20px 0 12px -20px',
                     color: '#414833',
-                    borderTop: '1px solid #bbc497',
                     paddingTop: '15px'
                   }}>
                     {tituloText.toUpperCase()}
