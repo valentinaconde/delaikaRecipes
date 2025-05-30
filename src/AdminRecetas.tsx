@@ -29,17 +29,21 @@ const AdminRecetas: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState('');
   const [search, setSearch] = useState('');
+  const [loadingCategorias, setLoadingCategorias] = useState(false);
+  const [loadingRecetas, setLoadingRecetas] = useState(false);
 
   // Fetch categorías y recetas+ingredientes
   const fetchAll = async () => {
-    setLoading(true);
+    setLoadingCategorias(true);
+    setLoadingRecetas(true);
     setError(null);
     // Categorías
     const { data: catData } = await supabase.from('categorias').select('id, nombre').order('nombre');
     setCategorias(catData || []);
+    setLoadingCategorias(false);
     // Recetas
     const { data: recData, error: recError } = await supabase.from('recetas').select('*').order('id', { ascending: false });
-    if (recError) { setError(recError.message); setLoading(false); return; }
+    if (recError) { setError(recError.message); setLoadingRecetas(false); return; }
     // Ingredientes
     const { data: ingData } = await supabase.from('ingredientes').select('*');
     // Mapear recetas con ingredientes
@@ -53,7 +57,7 @@ const AdminRecetas: React.FC = () => {
       idCategoria: r.idCategoria,
     }));
     setRecetas(recetasMap);
-    setLoading(false);
+    setLoadingRecetas(false);
   };
 
   useEffect(() => { fetchAll(); }, []);
@@ -172,7 +176,6 @@ const AdminRecetas: React.FC = () => {
       {error && <div style={{color: 'red'}}>{error}</div>}
       {success && <div style={{color: 'green'}}>{success}</div>}
       {/* Buscador de recetas */}
-      <div className="busqueda-input">
       <div style={{ maxWidth: 400, margin: '1.2rem 0 1.5rem 0', display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'flex-start' }}>
         <input
           type="text"
@@ -180,11 +183,12 @@ const AdminRecetas: React.FC = () => {
           onChange={e => setSearch(e.target.value)}
           placeholder="Buscar receta..."
           aria-label="Buscar receta"
-          style={{ width: '100%', padding: '10px 20px', borderRadius: 6, border: '1.5px solid var(--color-dun)', fontSize: '1rem', background: 'var(--color-bone)', color: '#222', textAlign: 'left' }}
+          style={{ width: '100%', padding: '0.6em 1em', borderRadius: 6, border: '1.5px solid var(--color-dun)', fontSize: '1rem', background: 'var(--color-bone)', color: '#222', textAlign: 'left' }}
         />
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#414833" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: -40, pointerEvents: 'none'}}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#414833" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: -30, pointerEvents: 'none'}}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </div>
-      </div>
+      {loadingCategorias && <div className="loading-spinner">Cargando categorías...</div>}
+      {loadingRecetas && <div className="loading-spinner">Cargando recetas...</div>}
       <ul className="abml-recetas-list">
         {[...recetas]
           .filter(r => r.titulo.toLowerCase().includes(search.toLowerCase()))
