@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export type CategoriaSidebar = { id: number; nombre: string };
 export type CategoriasSidebarProps = {
@@ -12,7 +12,6 @@ export type CategoriasSidebarProps = {
 
 const CategoriasSidebar: React.FC<CategoriasSidebarProps> = ({ categorias, categoriaSeleccionada, onCategoriaClick, isMobile = false, visible = true }) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const handleClick = (cat: CategoriaSidebar | null) => {
     if (cat) {
       // Si hay categoría, navegar a principal con filtro
