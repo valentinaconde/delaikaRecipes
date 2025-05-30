@@ -22,6 +22,7 @@ const AdminCategorias: React.FC = () => {
   const [edit, setEdit] = useState<EditState>(null);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState('');
+  const [search, setSearch] = useState('');
 
   const fetchCategorias = async () => {
     const { data, error } = await supabase
@@ -106,32 +107,49 @@ const AdminCategorias: React.FC = () => {
           Agregar
         </button>
       </div>
+      {/* Buscador de categorías */}
+      <div className="busqueda-input">
+      <div style={{ maxWidth: 400, margin: '1.2rem 0 1.5rem 0', display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'flex-start' }}>
+        <input
+          type="text"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Buscar categoría..."
+          aria-label="Buscar categoría"
+          style={{ width: '100%', padding: '10px 20px', borderRadius: 6, border: '1.5px solid var(--color-dun)', fontSize: '1rem', background: 'var(--color-bone)', color: '#222', textAlign: 'left' }}
+        />
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#414833" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: -40, pointerEvents: 'none'}}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      </div>
       {error && <div style={{color: 'red'}}>{error}</div>}
       {success && <div style={{color: 'green'}}>{success}</div>}
       <ul className="abml-categorias-list">
-        {categorias.map(cat => (
-          <li key={cat.id} className="abml-categorias-item">
-            {edit && edit.id === cat.id ? (
-              <>
-                <input
-                  type="text"
-                  value={edit.nombre}
-                  onChange={handleEditChange}
-                  disabled={saving}
-                  aria-label="Editar nombre de categoría"
-                />
-                <button onClick={handleEditSave} disabled={saving || !edit.nombre.trim()}>Guardar</button>
-                <button onClick={() => setEdit(null)} disabled={saving}>Cancelar</button>
-              </>
-            ) : (
-              <>
-                <span>{cat.nombre}</span>
-                <button onClick={() => handleEdit(cat)} disabled={saving}>Editar</button>
-                <button onClick={() => handleDelete(cat.id)} disabled={saving}>Eliminar</button>
-              </>
-            )}
-          </li>
-        ))}
+        {[...categorias]
+          .filter(cat => cat.nombre.toLowerCase().includes(search.toLowerCase()))
+          .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }))
+          .map(cat => (
+            <li key={cat.id} className="abml-categorias-item">
+              {edit && edit.id === cat.id ? (
+                <>
+                  <input
+                    type="text"
+                    value={edit.nombre}
+                    onChange={handleEditChange}
+                    disabled={saving}
+                    aria-label="Editar nombre de categoría"
+                  />
+                  <button onClick={handleEditSave} disabled={saving || !edit.nombre.trim()}>Guardar</button>
+                  <button onClick={() => setEdit(null)} disabled={saving}>Cancelar</button>
+                </>
+              ) : (
+                <>
+                  <span>{cat.nombre}</span>
+                  <button onClick={() => handleEdit(cat)} disabled={saving}>Editar</button>
+                  <button onClick={() => handleDelete(cat.id)} disabled={saving}>Eliminar</button>
+                </>
+              )}
+            </li>
+          ))}
       </ul>
     </div>
   );
