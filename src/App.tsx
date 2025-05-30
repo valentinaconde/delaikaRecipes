@@ -4,7 +4,7 @@
 
 import './App.css'
 import { useState, useEffect, createContext, useContext } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, Link, useParams, Outlet } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, Link, useParams, Outlet, useLocation } from 'react-router-dom'
 import CategoriasSidebar from './CategoriasSidebar'
 import RecetasGrid from './RecetasGrid'
 import RecetaDetalle from './RecetaDetalle'
@@ -118,6 +118,7 @@ const LoginView: React.FC = () => {
 };
 
 const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void }) => {
+  const location = useLocation();
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<{ id: number; nombre: string } | null>(null);
   const [showCategorias, setShowCategorias] = useState(false); // Por defecto cerrado en mobile
   const [error, setError] = useState<string | null>(null);
@@ -125,6 +126,7 @@ const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void
   const [recetas, setRecetas] = useState<any[]>([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [search, setSearch] = useState('');
+  const [loadingRecetas, setLoadingRecetas] = useState(true); // Nuevo estado
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -144,22 +146,40 @@ const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void
     fetchCategorias();
   }, []);
 
+  // Leer query param 'categoria' al montar o cambiar la url
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const catNombre = params.get('categoria');
+    if (catNombre && categorias.length > 0) {
+      const cat = categorias.find(c => c.nombre.toLowerCase() === catNombre.toLowerCase());
+      if (cat) setCategoriaSeleccionada(cat);
+      else setCategoriaSeleccionada(null);
+    } else if (!catNombre) {
+      setCategoriaSeleccionada(null);
+    }
+  }, [location.search, categorias]);
+
   // Fetch recetas según categoría seleccionada
   useEffect(() => {
+    let ignore = false;
     const fetchRecetas = async () => {
-      setGlobalLoading(true);
+      setLoadingRecetas(true);
       setError(null);
       let query = supabase.from('recetas').select('*');
       if (categoriaSeleccionada) {
         query = query.eq('idCategoria', categoriaSeleccionada.id);
       }
       const { data, error } = await query.order('id', { ascending: false });
+      if (ignore) return;
       if (error) setError(error.message);
       else setRecetas(data || []);
-      setGlobalLoading(false);
+      setLoadingRecetas(false);
     };
-    fetchRecetas();
-  }, [categoriaSeleccionada]);
+    // Solo buscar si las categorías ya están cargadas (para evitar recetas no filtradas)
+    if (categorias.length > 0) fetchRecetas();
+    else setLoadingRecetas(true);
+    return () => { ignore = true; };
+  }, [categoriaSeleccionada, categorias]);
 
   const handleToggleCategorias = () => setShowCategorias(v => !v);
 
@@ -237,11 +257,15 @@ const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void
           </div>
         </div>
         {error && <div style={{color: 'red'}}>{error}</div>}
-        <RecetasGrid recetas={
-          [...recetas]
-            .filter(r => r.titulo.toLowerCase().includes(search.toLowerCase()))
-            .sort((a, b) => a.titulo.localeCompare(b.titulo, 'es', { sensitivity: 'base' }))
-        } />
+        {loadingRecetas ? (
+          <div className="loading-spinner">Cargando recetas...</div>
+        ) : (
+          <RecetasGrid recetas={
+            [...recetas]
+              .filter(r => r.titulo.toLowerCase().includes(search.toLowerCase()))
+              .sort((a, b) => a.titulo.localeCompare(b.titulo, 'es', { sensitivity: 'base' }))
+          } />
+        )}
       </main>
     </div>
   );

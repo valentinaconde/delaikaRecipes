@@ -14,9 +14,12 @@ const CategoriasSidebar: React.FC<CategoriasSidebarProps> = ({ categorias, categ
   const navigate = useNavigate();
   const location = useLocation();
   const handleClick = (cat: CategoriaSidebar | null) => {
-    if (location.pathname.startsWith('/receta/')) {
-      // Redirigir a la pantalla principal con filtro
-      navigate(`/?categoria=${encodeURIComponent(cat?.nombre ?? '')}`);
+    if (cat) {
+      // Si hay categoría, navegar a principal con filtro
+      navigate(`/?categoria=${encodeURIComponent(cat.nombre)}`);
+    } else {
+      // Si es 'Todas', navegar a principal sin filtro
+      navigate(`/`);
     }
     onCategoriaClick(cat);
   };
