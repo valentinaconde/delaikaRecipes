@@ -618,7 +618,7 @@ html {
   }
 
 .abml-recetas-item > span {
-  width: 500px;
+  width: 400px;
   flex: 0.1 1 auto;
   min-width: 0;
   text-align: left;
