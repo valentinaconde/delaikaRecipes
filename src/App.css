@@ -1130,3 +1130,39 @@ html {
     margin-left: 6px;
   }
 }
+
+.detalle-ingrediente-titulo {
+  font-weight: bold;
+  color: #414833;
+  margin: 12px 0 8px -20px;
+  padding-top: 8px;
+  list-style: none;
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.detalle-paso-titulo-section {
+  font-weight: bold;
+  color: #414833;
+  margin: 20px 0 12px -20px;
+  padding-top: 15px;
+  border-top: 1px solid #bbc497;
+  list-style: none;
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 768px) {
+  .detalle-ingrediente-titulo {
+    margin: 10px 0 6px -16px;
+    font-size: 1rem;
+  }
+  
+  .detalle-paso-titulo-section {
+    margin: 16px 0 10px -16px;
+    font-size: 1rem;
+    padding-top: 12px;
+  }
+}

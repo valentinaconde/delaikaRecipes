@@ -161,9 +161,8 @@ const AdminRecetas: React.FC = () => {
         <select name="categoria" value={form.categoria} onChange={handleChange} disabled={loading}>
           <option value="">Sin categoría</option>
           {categorias.map(cat => <option key={cat.id} value={cat.nombre}>{cat.nombre}</option>)}
-        </select>
-        <textarea name="ingredientes" placeholder="Ingredientes (separados por coma)" value={form.ingredientes} onChange={handleChange} disabled={loading} />
-        <textarea name="pasos" placeholder="Pasos (uno por línea; puedes intercalar comentarios usando tip, tips, aclaracion o comentario)" value={form.pasos} onChange={handleChange} disabled={loading} />
+        </select>        <textarea name="ingredientes" placeholder="Ingredientes (separados por coma; inicia con 'titulo' para crear secciones en negrita)" value={form.ingredientes} onChange={handleChange} disabled={loading} />
+        <textarea name="pasos" placeholder="Pasos (uno por línea; usa 'titulo' para crear secciones y reiniciar numeración; usa tip/comentario para notas)" value={form.pasos} onChange={handleChange} disabled={loading} />
         {editId === null ? (
           <button onClick={handleAdd} disabled={loading}>Agregar</button>
         ) : (

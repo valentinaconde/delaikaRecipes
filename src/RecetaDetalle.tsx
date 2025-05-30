@@ -55,9 +55,24 @@ const RecetaDetalle: React.FC<RecetaDetalleProps> = ({ receta, recetasRelacionad
         <div className="detalle-ingredientes">
           <div className="detalle-ingredientes-titulo">INGREDIENTES</div>
           <ul>
-            {receta.ingredientes.map((ing, i) => (
-              <li key={i}>{ing}</li>
-            ))}
+            {receta.ingredientes.map((ing, i) => {
+              // Verificar si el ingrediente es un título
+              if (ing.trim().toLowerCase().startsWith('titulo')) {
+                const tituloText = ing.replace(/^titulo[:]?\s*/i, '').trim();
+                return (
+                  <li key={i} className="detalle-ingrediente-titulo" style={{
+                    listStyle: 'none', 
+                    fontWeight: 'bold', 
+                    margin: '12px 0 8px -20px',
+                    color: '#414833'
+                  }}>
+                    {tituloText.toUpperCase()}
+                  </li>
+                );
+              }
+              // Ingrediente normal
+              return <li key={i}>{ing}</li>;
+            })}
           </ul>
         </div>
       </div>
@@ -68,6 +83,8 @@ const RecetaDetalle: React.FC<RecetaDetalleProps> = ({ receta, recetasRelacionad
             let pasoIndex = 0;
             return receta.pasos.map((paso, i) => {
               const lower = paso.trim().toLowerCase();
+              
+              // Verificar si es un comentario
               const isComentario = /^(tip|tips|aclaracion|comentario)[:]?/i.test(lower);
               if (isComentario) {
                 return (
@@ -76,6 +93,26 @@ const RecetaDetalle: React.FC<RecetaDetalleProps> = ({ receta, recetasRelacionad
                   </li>
                 );
               }
+              
+              // Verificar si es un título (resetea el contador)
+              if (lower.startsWith('titulo')) {
+                pasoIndex = 0;
+                const tituloText = paso.replace(/^titulo[:]?\s*/i, '').trim();
+                return (
+                  <li key={i} className="detalle-paso-titulo-section" style={{
+                    listStyle: 'none', 
+                    fontWeight: 'bold', 
+                    margin: '20px 0 12px -20px',
+                    color: '#414833',
+                    borderTop: '1px solid #bbc497',
+                    paddingTop: '15px'
+                  }}>
+                    {tituloText.toUpperCase()}
+                  </li>
+                );
+              }
+              
+              // Paso normal
               pasoIndex++;
               return <li key={i} value={pasoIndex}>{paso}</li>;
             });
