@@ -1126,6 +1126,7 @@ html {
 @media (max-width: 768px) {
   .compartir-btn {
     margin-left: 8px;
+    margin-top: 5px;
   }
   .copied-tooltip {
     font-size: 0.95rem;
@@ -1170,5 +1171,54 @@ html {
     margin: 16px 0 10px -16px;
     font-size: 1rem;
     padding-top: 12px;
+  }
+}
+
+.snackbar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 200px;
+  background-color: #414833;
+  color: white;
+  text-align: center;
+  border-radius: 6px;
+  padding: 12px 20px;
+  z-index: 999;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  font-size: 0.95rem;
+  animation: snackbar-fade-in 0.3s, snackbar-fade-out 0.3s 1.5s;
+  pointer-events: none;
+}
+
+@keyframes snackbar-fade-in {
+  from {
+    bottom: 0;
+    opacity: 0;
+  }
+  to {
+    bottom: 20px;
+    opacity: 1;
+  }
+}
+
+@keyframes snackbar-fade-out {
+  from {
+    bottom: 20px;
+    opacity: 1;
+  }
+  to {
+    bottom: 0;
+    opacity: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .snackbar {
+    bottom: 16px;
+    min-width: 180px;
+    padding: 10px 16px;
+    font-size: 0.9rem;
   }
 }

@@ -47,7 +47,7 @@ const RecetaDetalle: React.FC<RecetaDetalleProps> = ({ receta, recetasRelacionad
           </svg>
         </button>
         {copied && (
-          <span className="copied-tooltip" role="status" aria-live="polite" style={{ marginLeft: 8, color: '#737A5D', fontSize: '0.98rem' }}>¡Enlace copiado!</span>
+          <div className="snackbar" role="status" aria-live="polite">¡Enlace copiado!</div>
         )}
       </div>
       <div className="detalle-layout">
