@@ -181,6 +181,7 @@ html {
   transition: background 0.15s;
   background: transparent;
   border-bottom: 1px solid #bbc497;
+  border-radius: 3px;
 }
 
 .category-item a {
