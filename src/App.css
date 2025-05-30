@@ -1095,3 +1095,37 @@ html {
     padding-right: 0.5rem;
   }
 }
+
+.compartir-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+  margin-top: 10px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: filter 0.15s;
+  width: 20px;
+}
+.compartir-btn:focus {
+  outline: 2px solid var(--color-reseda);
+}
+.compartir-btn:hover svg {
+  filter: brightness(0.7);
+}
+.copied-tooltip {
+  color: #737A5D;
+  font-size: 0.98rem;
+  margin-left: 8px;
+  transition: opacity 0.2s;
+}
+@media (max-width: 768px) {
+  .compartir-btn {
+    margin-left: 8px;
+  }
+  .copied-tooltip {
+    font-size: 0.95rem;
+    margin-left: 6px;
+  }
+}

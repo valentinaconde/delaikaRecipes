@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import RecetasGrid from './RecetasGrid';
 
@@ -17,9 +17,39 @@ type RecetaDetalleProps = {
 };
 
 const RecetaDetalle: React.FC<RecetaDetalleProps> = ({ receta, recetasRelacionadas }) => {
+  const [copied, setCopied] = useState(false);
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      setCopied(false);
+    }
+  };
   return (
     <div className="detalle-container">
-      <h2 className="detalle-titulo">{receta.titulo}</h2>
+      <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+        <h2 className="detalle-titulo">{receta.titulo}</h2>
+        <button
+          className="compartir-btn"
+          aria-label="Compartir receta"
+          title="Compartir receta"
+          onClick={handleShare}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', marginLeft: 12, padding: 0 }}
+        >
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#414833" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+            <circle cx="18" cy="5" r="3" />
+            <circle cx="6" cy="12" r="3" />
+            <circle cx="18" cy="19" r="3" />
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+          </svg>
+        </button>
+        {copied && (
+          <span className="copied-tooltip" role="status" aria-live="polite" style={{ marginLeft: 8, color: '#737A5D', fontSize: '0.98rem' }}>¡Enlace copiado!</span>
+        )}
+      </div>
       <div className="detalle-layout">
         <img src={receta.imagen} alt={receta.titulo} className="detalle-foto" />
         <div className="detalle-ingredientes">
