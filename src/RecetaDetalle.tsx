@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import RecetasGrid from './RecetasGrid';
 
 type RecetaDetalleProps = {
   receta: {
@@ -8,9 +9,14 @@ type RecetaDetalleProps = {
     ingredientes: string[];
     pasos: string[];
   };
+  recetasRelacionadas?: Array<{
+    id: number;
+    titulo: string;
+    imagen: string;
+  }>;
 };
 
-const RecetaDetalle: React.FC<RecetaDetalleProps> = ({ receta }) => {
+const RecetaDetalle: React.FC<RecetaDetalleProps> = ({ receta, recetasRelacionadas }) => {
   return (
     <div className="detalle-container">
       <h2 className="detalle-titulo">{receta.titulo}</h2>
@@ -46,6 +52,12 @@ const RecetaDetalle: React.FC<RecetaDetalleProps> = ({ receta }) => {
           })()}
         </ol>
       </div>
+      {recetasRelacionadas && recetasRelacionadas.length > 0 && (
+        <div className="relacionadas-section">
+          <h3 className="relacionadas-titulo">Recetas relacionadas</h3>
+          <RecetasGrid recetas={recetasRelacionadas.slice(0, 5)} />
+        </div>
+      )}
     </div>
   );
 };

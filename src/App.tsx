@@ -258,6 +258,7 @@ const RecetaDetalleWrapper: React.FC<{ setGlobalLoading: (v: boolean) => void }>
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<{ id: number; nombre: string } | null>(null);
   const [showCategorias, setShowCategorias] = useState(false); // Comienza cerrado en detalle de receta
   const [isMobile, setIsMobile] = useState(false);
+  const [recetasRelacionadas, setRecetasRelacionadas] = useState<any[]>([]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -295,6 +296,19 @@ const RecetaDetalleWrapper: React.FC<{ setGlobalLoading: (v: boolean) => void }>
       setIngredientes((ingData || []).map(i => i.detalle));
       // Pasos
       setPasos(data.pasos ? data.pasos.split('\n').map((p: string) => p.trim()).filter(Boolean) : []);
+      // Traer recetas relacionadas (misma categoría, excluyendo la actual)
+      if (data.idCategoria) {
+        const { data: relacionadas } = await supabase
+          .from('recetas')
+          .select('*')
+          .eq('idCategoria', data.idCategoria)
+          .neq('id', id)
+          .order('id', { ascending: false })
+          .limit(5);
+        setRecetasRelacionadas(relacionadas || []);
+      } else {
+        setRecetasRelacionadas([]);
+      }
       setLoading(false);
       setGlobalLoading(false);
     };
@@ -385,7 +399,7 @@ const RecetaDetalleWrapper: React.FC<{ setGlobalLoading: (v: boolean) => void }>
             imagen: receta.image,
             ingredientes,
             pasos,
-          }} />
+          }} recetasRelacionadas={recetasRelacionadas} />
         )}
       </main>
     </div>
