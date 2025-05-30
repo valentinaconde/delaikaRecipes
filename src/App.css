@@ -1018,7 +1018,7 @@ html {
   .breadcrumb {
     font-size: 0.98rem;
     margin: 0.7rem 0 0.5rem 0;
-    padding: 0 0.7rem;
+    padding: 0px 20px;
   }
 }
 
@@ -1090,13 +1090,12 @@ html {
 @media (max-width: 768px) {
   .sticky-breadcrumb {
     top: 0;
-    padding-left: 0.5rem;
     padding-right: 0.5rem;
   }
   .sticky-busqueda-input {
     top: 40px;
-    padding-left: 0.5rem;
     padding-right: 0.5rem;
+    width: 95%
   }
 }
 

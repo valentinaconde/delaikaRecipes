@@ -243,7 +243,7 @@ const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void
             )}
           </nav>
           <div className="busqueda-input sticky-busqueda-input">
-            <div style={{ maxWidth: 400, margin: '1.2rem auto 1.5rem auto', display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'flex-start' }}>
+            <div style={{  width: '90%',margin: '1.2rem auto 1.5rem auto', display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'flex-start' }}>
               <input
                 type="text"
                 value={search}
