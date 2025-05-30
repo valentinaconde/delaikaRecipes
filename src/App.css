@@ -222,7 +222,6 @@ html {
   gap: 1.2rem;
   margin-top: 1.5rem;
   width: 100%;
-  padding: 20px;
   box-sizing: border-box;
   justify-content: flex-start;
 }
@@ -306,6 +305,7 @@ html {
   font-weight: 600;
   margin-bottom: 0.7rem;
   color: #222;
+  text-align: start;
 }
 .detalle-ingredientes ul {
   margin: 0;
@@ -330,6 +330,7 @@ html {
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.7rem;
+  text-align: start;
   color: #222;
 }
 .detalle-pasos ol {
@@ -939,6 +940,8 @@ html {
 }
 
 .relacionadas-section {
+  width: 100%;
+  border-top:  1px solid #bbc497;
   margin-top: 2.5rem;
   padding: 0 0 1.5rem 0;
 }
