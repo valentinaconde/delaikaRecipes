@@ -1030,3 +1030,37 @@ html {
   min-height: 7.5em;
   resize: vertical;
 }
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--color-bone);
+}
+.sticky-breadcrumb {
+  position: sticky;
+  top: 0;
+  z-index: 11;
+  background: var(--color-bone);
+  margin-bottom: 0;
+}
+.sticky-busqueda-input {
+  position: sticky;
+  top: 48px; /* debajo del breadcrumb */
+  z-index: 10;
+  background: var(--color-bone);
+  padding-top: 0.5rem;
+  margin-bottom: 0;
+}
+@media (max-width: 768px) {
+  .sticky-breadcrumb {
+    top: 0;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  .sticky-busqueda-input {
+    top: 40px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}

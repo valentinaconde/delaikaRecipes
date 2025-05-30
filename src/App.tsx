@@ -203,36 +203,38 @@ const MainView = ({ setGlobalLoading }: { setGlobalLoading: (v: boolean) => void
         visible={isMobile ? showCategorias : true}
       />
       <main className={`main-content${isMobile && showCategorias ? ' main-content--with-categorias' : ''}`} style={isMobile && showCategorias ? { marginTop: 0 } : {}}>
-        <nav className="breadcrumb" aria-label="breadcrumb">
-          <a
-            href="/"
-            className="breadcrumb-link"
-            tabIndex={0}
-            aria-label="Ir a recetas"
-            onClick={e => { e.preventDefault(); setCategoriaSeleccionada(null); }}
-            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { setCategoriaSeleccionada(null); } }}
-          >
-            RECETAS
-          </a>
-          {categoriaSeleccionada && (
-            <>
-              <span className="breadcrumb-separator" aria-hidden="true">/</span>
-              <span className="breadcrumb-current">{categoriaSeleccionada.nombre}</span>
-            </>
-          )}
-        </nav>
-        <div className="busqueda-input">
-        <div style={{ maxWidth: 400, margin: '1.2rem auto 1.5rem auto', display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'flex-start' }}>
-          <input
-            type="text"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Buscar receta..."
-            aria-label="Buscar receta"
-            style={{ width: '100%', padding: '10px 20px', borderRadius: 6, border: '1.5px solid var(--color-dun)', fontSize: '1rem', background: 'var(--color-bone)', color: '#222', textAlign: 'left' }}
-          />
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#414833" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: -40, pointerEvents: 'none'}}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </div>
+        <div className="sticky-header">
+          <nav className="breadcrumb sticky-breadcrumb" aria-label="breadcrumb">
+            <a
+              href="/"
+              className="breadcrumb-link"
+              tabIndex={0}
+              aria-label="Ir a recetas"
+              onClick={e => { e.preventDefault(); setCategoriaSeleccionada(null); }}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { setCategoriaSeleccionada(null); } }}
+            >
+              RECETAS
+            </a>
+            {categoriaSeleccionada && (
+              <>
+                <span className="breadcrumb-separator" aria-hidden="true">/</span>
+                <span className="breadcrumb-current">{categoriaSeleccionada.nombre}</span>
+              </>
+            )}
+          </nav>
+          <div className="busqueda-input sticky-busqueda-input">
+            <div style={{ maxWidth: 400, margin: '1.2rem auto 1.5rem auto', display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'flex-start' }}>
+              <input
+                type="text"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Buscar receta..."
+                aria-label="Buscar receta"
+                style={{ width: '100%', padding: '10px 20px', borderRadius: 6, border: '1.5px solid var(--color-dun)', fontSize: '1rem', background: 'var(--color-bone)', color: '#222', textAlign: 'left' }}
+              />
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#414833" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: -40, pointerEvents: 'none'}}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+          </div>
         </div>
         {error && <div style={{color: 'red'}}>{error}</div>}
         <RecetasGrid recetas={
